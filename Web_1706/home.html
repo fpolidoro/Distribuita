@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<title>Bid$</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+/* Set the width of the sidebar to 120px */
+.w3-sidebar {width: 120px;/*background: #222;*/}
+.w3-hover-text-indigo:hover{color:#3f51b5!important}
+.w3-indigo-extra-light {color:#000 !important; background-color:#f3f4fb !important}
+.w3-indigo-light {color:#fff !important; background-color:#8995d6 !important}
+.w3-hover-indigo-light:hover{color:#fff !important; background-color:#8995d6 !important}
+/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+#main {margin-left: 120px; margin-top:116px;}
+/* Remove margins from "page content" on small screens */
+@media only screen and (max-width: 600px) {#main {margin-left: 0} #myNavbar{margin-top:116px}}
+</style>
+<body class="w3-indigo-extra-light">
+  <!-- Header/Home -->
+<header class="w3-container w3-white w3-top w3-text-indigo" id="home">
+  <h1 class="w3-jumbo">
+  <span>Bid$</span>
+  <i class="fa fa-gavel"></i>
+  </h1>
+</header>
+<!-- Icon Bar (Sidebar - hidden on small screens) -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-text-indigo w3-indigo-extra-light">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-indigo w3-hover-white w3-hover-text-indigo">
+    <i class="fa fa-gavel w3-xxlarge"></i>
+    <p>BIDS</p>
+  </a>
+  <button onclick="document.getElementById('loginCard').style.display='block'" class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo">
+    <i class="fa fa-user w3-xxlarge"></i>
+    <p>LOGIN</p>
+  </button>
+</nav>
+
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+  <div class="w3-bar w3-indigo w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="#" class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">BIDS</a>
+    <a onclick="document.getElementById('loginCard').style.display='block'" class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">LOGIN</a>
+  </div>
+</div>
+
+<!-- Login modal -->
+  <div id="loginCard" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-animate-left">
+      <header class="w3-container w3-center">
+      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="document.getElementById('loginCard').style.display='none'" title="Close Modal"></i>
+        <p class="w3-medium w3-text-indigo">LOGIN to Bid$</p>
+	  </header>
+      <form class="w3-container" action="/action_page.php">
+      	<div class="w3-section">
+          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
+          <input class="w3-input w3-border" type="password" placeholder="Password" name="psw" required>
+          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit">Login</button>
+        </div>
+      </form>
+      <div class="w3-container" style="padding-top:0px">
+      <p class="w3-text-black w3-center">or</p>
+      <button class="w3-button w3-block w3-section w3-indigo w3-padding w3-hover-indigo-light" onclick="document.getElementById('registerCard').style.display='block'">Register</button>
+      </div>
+      </div>
+  </div>
+
+<!-- Register modal -->
+    <div id="registerCard" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-animate-right">
+      <header class="w3-container w3-center">
+      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="document.getElementById('registerCard').style.display='none'" title="Close Modal"></i>
+        <p class="w3-medium w3-text-indigo">REGISTER to Bid$</p>
+	  </header>
+      <form class="w3-container" action="/action_page.php">
+        <div class="w3-section">
+          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
+          <input class="w3-input w3-border" type="password" placeholder="Enter a password" name="newpsw" required>
+          <p class="w3-text-black w3-small">Password must contain at least a number and a letter</p>
+          <input class="w3-input w3-border" type="password" placeholder="Re-enter password" name="checkpsw" required>
+          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit">Register</button>
+        </div>
+      </form>
+
+      <div class="w3-container w3-padding">
+        <p class="w3-text-black w3-right">Already a member? <span onclick="document.getElementById('registerCard').style.display='none'" class="w3-hover-text-red w3-text-indigo">Login</span></p>
+      </div>
+      </div>
+  </div>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- About Section -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+    <h2 class="w3-text-light-grey">My Name</h2>
+    <hr style="width:200px" class="w3-opacity">
+    <p>Some text about me. Some text about me. I am lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+      ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur
+      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </p>
+    <h3 class="w3-padding-16 w3-text-light-grey">My Skills</h3>
+    <p class="w3-wide">Photography</p>
+    <div class="w3-white">
+      <div class="w3-dark-grey" style="height:28px;width:95%"></div>
+    </div>
+    <p class="w3-wide">Web Design</p>
+    <div class="w3-white">
+      <div class="w3-dark-grey" style="height:28px;width:85%"></div>
+    </div>
+    <p class="w3-wide">Photoshop</p>
+    <div class="w3-white">
+      <div class="w3-dark-grey" style="height:28px;width:80%"></div>
+    </div><br>
+    
+    <div class="w3-row w3-center w3-padding-16 w3-section w3-light-grey">
+      <div class="w3-quarter w3-section">
+        <span class="w3-xlarge">11+</span><br>
+        Partners
+      </div>
+      <div class="w3-quarter w3-section">
+        <span class="w3-xlarge">55+</span><br>
+        Projects Done
+      </div>
+      <div class="w3-quarter w3-section">
+        <span class="w3-xlarge">89+</span><br>
+        Happy Clients
+      </div>
+      <div class="w3-quarter w3-section">
+        <span class="w3-xlarge">150+</span><br>
+        Meetings
+      </div>
+    </div>
+
+    <button class="w3-button w3-light-grey w3-padding-large w3-section">
+      <i class="fa fa-download"></i> Download Resume
+    </button>
+    
+    <!-- Grid for pricing tables -->
+    <h3 class="w3-padding-16 w3-text-light-grey">My Price</h3>
+    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-half w3-margin-bottom">
+        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
+          <li class="w3-dark-grey w3-xlarge w3-padding-32">Basic</li>
+          <li class="w3-padding-16">Web Design</li>
+          <li class="w3-padding-16">Photography</li>
+          <li class="w3-padding-16">5GB Storage</li>
+          <li class="w3-padding-16">Mail Support</li>
+          <li class="w3-padding-16">
+            <h2>$ 10</h2>
+            <span class="w3-opacity">per month</span>
+          </li>
+          <li class="w3-light-grey w3-padding-24">
+            <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="w3-half">
+        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
+          <li class="w3-dark-grey w3-xlarge w3-padding-32">Pro</li>
+          <li class="w3-padding-16">Web Design</li>
+          <li class="w3-padding-16">Photography</li>
+          <li class="w3-padding-16">50GB Storage</li>
+          <li class="w3-padding-16">Endless Support</li>
+          <li class="w3-padding-16">
+            <h2>$ 25</h2>
+            <span class="w3-opacity">per month</span>
+          </li>
+          <li class="w3-light-grey w3-padding-24">
+            <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
+          </li>
+        </ul>
+      </div>
+    <!-- End Grid/Pricing tables -->
+    </div>
+    
+    <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+  <!-- End footer -->
+  </footer>
+
+<!-- END PAGE CONTENT -->
+</div>
+
+</body>
+</html>
+
