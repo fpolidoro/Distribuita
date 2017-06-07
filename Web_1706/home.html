@@ -79,9 +79,9 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       <form class="w3-container" action="/action_page.php">
         <div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
-          <input class="w3-input w3-border" type="password" placeholder="Enter a password" name="newpsw" required>
+          <input class="w3-input w3-border" type="password" placeholder="Enter a password" name="newpsw" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}">
           <p class="w3-text-black w3-small">Password must contain at least a number and a letter</p>
-          <input class="w3-input w3-border" type="password" placeholder="Re-enter password" name="checkpsw" required>
+          <input class="w3-input w3-border" type="password" placeholder="Re-enter password" name="checkpsw" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}">
           <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit">Register</button>
         </div>
       </form>
@@ -195,4 +195,3 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 </body>
 </html>
-
