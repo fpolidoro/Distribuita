@@ -20,44 +20,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0} #myNavbar{margin-top:116px}}
 </style>
-<head>
-<script type="text/javascript">
 
-  function checkPassword(str)
-  {
-    var re = "(?=.*\d)(?=.*[A-Za-z]).{2,}";
-    return re.test(str);
-  }
-
-  function checkForm(form)
-  {
-    if(form.username.value == "") {
-      alert("Error: Username cannot be blank!");
-      form.username.focus();
-      return false;
-    }
-    re = "^([A-Za-z\d\-\_\.]){1,}@([A-Za-z\d\-\.]){1,}\.[A-Za-z]{2,})";
-    if(!re.test(form.usrname.value)) {
-      alert("Error: Username must contain only letters, numbers and underscores!");
-      form.usrname.focus();
-      return false;
-    }
-    if(form.newpsw.value != "" && form.newpsw.value == form.checkpsw.value) {
-      if(!checkPassword(form.newpsw.value)) {
-        alert("The password you have entered is not valid!");
-        form.newpsw.focus();
-        return false;
-      }
-    } else {
-      alert("Error: Please check that you've entered and confirmed your password!");
-      form.newpsw.focus();
-      return false;
-    }
-    return true;
-  }
-
-</script>
-</head>
 <body class="w3-indigo-extra-light">
   <!-- Header/Home -->
 <header class="w3-container w3-white w3-top w3-text-indigo" id="home">
@@ -90,19 +53,20 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <div id="loginCard" class="w3-modal">
       <div class="w3-modal-content w3-card-4 w3-animate-left">
       <header class="w3-container w3-center">
-      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="document.getElementById('loginCard').style.display='none'" title="Close Modal"></i>
+      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
         <p class="w3-medium w3-text-indigo">LOGIN to Bid$</p>
 	  </header>
-      <form class="w3-container" action="/action_page.php">
+      <form class="w3-container" id="loginForm" method="POST">
+      <p class="w3-animate-bottom w3-text-red w3-center" id="loginFailed"></p>
       	<div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Password" name="pswLogin" required>
-          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit">Login</button>
+          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" onclick="return checkForm(this,loginError)">Login</button>
         </div>
       </form>
       <div class="w3-container" style="padding-top:0px">
       <p class="w3-text-black w3-center">or</p>
-      <button class="w3-button w3-block w3-section w3-indigo w3-padding w3-hover-indigo-light" onclick="document.getElementById('registerCard').style.display='block'">Register</button>
+      <button class="w3-button w3-block w3-section w3-indigo w3-padding w3-hover-indigo-light" onclick="switchCards()">Register</button>
       </div>
       </div>
   </div>
@@ -111,24 +75,79 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <div id="registerCard" class="w3-modal">
       <div class="w3-modal-content w3-card-4 w3-animate-right">
       <header class="w3-container w3-center">
-      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="document.getElementById('registerCard').style.display='none'" title="Close Modal"></i>
+      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
         <p class="w3-medium w3-text-indigo">REGISTER to Bid$</p>
 	  </header>
-      <form class="w3-container" action="/action_page.php" onsubmit="return checkForm(this);" method="POST">
+      <form class="w3-container" action="/action_page.php" method="POST" id="registerForm">
+      <p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"></p>
         <div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
-          <input class="w3-input w3-border" type="password" placeholder="Enter a password" name="newpsw" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
-          <p class="w3-text-black w3-small">Password must contain at least a number and a letter</p>
-          <input class="w3-input w3-border" type="password" placeholder="Re-enter password" name="checkpsw" required>
+          <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
+          <p class="w3-text-black w3-small">*Password must contain at least a number and a letter</p>
+          <input class="w3-input w3-border" type="password" placeholder="Re-enter password*" name="checkpsw" id="checkpsw" required>
           <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit">Register</button>
         </div>
       </form>
 
       <div class="w3-container w3-padding">
-        <p class="w3-text-black w3-right">Already a member? <span onclick="document.getElementById('registerCard').style.display='none'" class="w3-hover-text-red w3-text-indigo">Login</span></p>
+        <p class="w3-text-black w3-right">Already a member? <span onclick="switchCards()" class="w3-hover-text-red w3-text-indigo">Login</span></p>
       </div>
       </div>
   </div>
+
+<script type="text/javascript">
+var password = document.getElementById("newpsw")
+  , confirm_password = document.getElementById("checkpsw");
+  
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+    document.getElementById("registerFailed").innerHTML = "passwords must match";
+  } else {
+    confirm_password.setCustomValidity('');
+    document.getElementById("registerFailed").innerHTML = "";
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+
+function switchCards() {
+    var login = document.getElementById('loginCard');
+    var register = document.getElementById('registerCard');
+    var logForm = document.getElementById('loginForm');
+    var regForm = document.getElementById('registerForm');
+    
+    
+    if (login.style.display === 'none') {
+        login.style.display = 'block';
+        register.style.display = 'none';
+        regForm.reset();
+    } else {
+        login.style.display = 'none';
+        register.style.display = 'block';
+        logForm.reset();
+    }
+} 
+
+function closeAndResetCard(){
+	var login = document.getElementById('loginCard');
+    var register = document.getElementById('registerCard');
+    var logForm = document.getElementById('loginForm');
+    var regForm = document.getElementById('registerForm');
+    
+    if (login.style.display === 'block') {
+        login.style.display = 'none';
+        logForm.reset();
+    }
+    if(register.style.display = 'block'){
+		register.style.display = 'none';
+        regForm.reset();
+    }
+}
+</script>
+
 
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
