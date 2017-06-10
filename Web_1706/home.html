@@ -60,7 +60,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       	<div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Password" name="pswLogin" required>
-          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" onclick="return checkForm(this,loginError)">Login</button>
+          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" onclick="return checkForm(this,loginError)" name="login">Login</button>
         </div>
       </form>
       <div class="w3-container" style="padding-top:0px">
@@ -84,7 +84,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
           <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
           <p class="w3-text-black w3-small">*Password must contain at least a number and a letter</p>
           <input class="w3-input w3-border" type="password" placeholder="Re-enter password*" name="checkpsw" id="checkpsw" required>
-          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit">Register</button>
+          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" name="register">Register</button>
         </div>
       </form>
 
