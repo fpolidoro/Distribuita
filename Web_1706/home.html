@@ -1,3 +1,9 @@
+<?php
+	isUserAuthenticated();
+    if(userIsAuthN){
+    	//redirect on user page
+    }
+?>
 <!DOCTYPE html>
 <html>
 <title>Bid$</title>
@@ -56,16 +62,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
         <p class="w3-medium w3-text-indigo">LOGIN to Bid$</p>
 	  </header>
       <form class="w3-container" id="loginForm" method="POST">
-            <?php
-        if(isset($_REQUEST['loginFailed'])) {
-          $error = $_REQUEST['registerFailed'];
-          echo <p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed">'
-          echo 'Error: '.htmlentities($error);
-          echo '</p>';
-          }else{
-          	$error = false;
-          }
-       ?>
+		<p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed"/>
+        
       	<div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Password" name="pswLogin" required>
@@ -87,16 +85,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
         <p class="w3-medium w3-text-indigo">REGISTER to Bid$</p>
 	  </header>
       <form class="w3-container" action="/action_page.php" method="POST" id="registerForm">
-      <?php
-        if(isset($_REQUEST['registerFailed'])) {
-          $error = $_REQUEST['registerFailed'];
-          echo <p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed">'
-          echo 'Error: '.htmlentities($error);
-          echo '</p>';
-          }else{
-          	$error = false;
-          }
-       ?>
+		<p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"/>
         <div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
@@ -226,3 +215,4 @@ function closeAndResetCard(){
 
 </body>
 </html>
+
