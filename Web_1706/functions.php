@@ -1,8 +1,10 @@
 <?php
     require 'config.php';
 
+    $userIsAuthN = false;
+
 function isUserAuthenticated(){
-    global $authenticated, $maxInactivityPeriod;
+    global $userIsAuthN, $maxInactivityPeriod;
     session_start();
     $t=time();
     $diff=0;
@@ -19,13 +21,15 @@ function isUserAuthenticated(){
         // If it's desired to kill the session, also delete the session cookie.
         // Note: This will destroy the session, and not just the session data!
         destroySession();
-        // redirect client to login page
+
+        // redirect client to home page (not the personal page)
         header('HTTP/1.1 307 temporary redirect');
-        header('Location: login.php?msg=SessionTimeOut');
+        header('Location: index.php?msg=SessionTimeOut');
         exit; // IMPORTANT to avoid further output from the script
-    } else {
+        
+    } else {    //user is still authN, so update time of cookie
         $_SESSION['time']=time(); /* update time */
-        echo '<html><body>Updated last access time: '.$_SESSION['time'].'</body></html>';
+        $userIsAuthN = true;
     }
 }
 
@@ -65,5 +69,44 @@ function redirect($msg=""){
     exit;
 }
 
+function redirectWithError($error){
+  header('Location: '.getRedirectionPageError()."?error=$error");
+  die();
+}
 
+function getRedirectionPageError(){
+    global $redirectionPages;
+    $currentScriptName = basename($_SERVER['SCRIPT_FILENAME']);
+    return $redirections[$currentScriptName]['error'];
+}
+
+function signup($conn, $email, $password) {
+    $result = $conn->query("SELECT uid FROM users WHERE uid = '$email'");
+    if(!$result) {  //se il risultato == 0, errore nella query
+        redirectWithError('Impossible to create the query');
+    }
+    if($result->num_rows == 0) {
+        // both if password wrong or if non-existing account
+        redirectWithError('This email is already registered.');
+    }
+    $result->close(); //free memory of buffer so that the db can be used by other queries
+    unset($result);
+
+    $result = $conn->query("INSERT INTO users(uid, upsw) VALUES('$email', '$password')");
+    if(!$result) {
+        redirectWithError('Impossible to create the account.');
+    }
+    // the id of the last inserted value
+    $id = $conn->insert_id;
+    if(!$conn->commit()) {
+        redirectWithError('Impossible to commit. Please try again');
+    }
+    // save into the session array
+    $_SESSION['time'] = time();
+    $_SESSION['email'] = $email;
+    $_SESSION['password'] = $password;
+    $_SESSION['user_id'] = $id;
+    // and go to the right place
+    goToDestination();
+}
 ?>

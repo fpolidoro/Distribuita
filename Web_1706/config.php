@@ -39,12 +39,24 @@ if (!isset($_COOKIE['test'])) {
 // inactivity period
 $maxInactivityPeriod = 60 * 2;  //2 minutes
 
+$redirectionPages = array(
+  'register.php' => array(
+    'success' => '',
+    'error' => 'index.php'
+  ),
+  'login.php' => array(
+    'success' => '',
+    'error' => 'index.php'
+  )
+);
+
+
 $database = 'local';
 if ($database === 'local') {
   $host = 'localhost';
-  $user = 'pma';
-  $pass = 'phpMyAdmin';
-  $db = 'test';
+  $user = 'root';
+  $pass = 'toor';
+  $db = 'users';
 } else{
   //require 'cclix_db_credentials.php';
   //$host = $cclix_host; unset($cclix_host);
