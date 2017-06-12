@@ -140,11 +140,6 @@ function showLoginCard(){
 	document.getElementById('loginCard').style.display='block';
 }
 
-function hideErrorDIV(){
-	$('#error').addClass('hidden');
-	$('#page').removeClass('hidden');
-}
-
 function closeAndResetCard(){
 	var login = document.getElementById('loginCard');
     var register = document.getElementById('registerCard');
@@ -160,6 +155,11 @@ function closeAndResetCard(){
         regForm.reset();
     }
 }
+
+function hideErrorDIV(){
+	$('#error').addClass('hidden');
+	$('#page').removeClass('hidden');
+}
 </script>
 
 
@@ -174,7 +174,7 @@ function closeAndResetCard(){
 	echo '<div class="w3-content w3-card w3-justify w3-text-grey w3-white" id="error">';
   	echo '<h1 class="w3-center w3-text-red">ERROR</h1>';
     	echo '<p class="w3-center">';
-	echo .htmlentities($error);
+	echo htmlentities($error);
 	echo '</p>';
     	echo '<p class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center" onclick="hideErrorDIV()">';
     	echo '<i class="fa fa-home w3-large"></i>';
@@ -184,10 +184,28 @@ function closeAndResetCard(){
 	echo '<div class="w3-row-padding hidden" style="margin:0 -16px" id="page">';
         } else {
           $error = false;
-          echo '<div class="w3-row-padding visible" style="margin:0 -16px" id="page">';
+          echo '<div class="w3-row-padding" style="margin:0 -16px" id="page">';
         }
 ?>
+
     <!-- Grid for pricing tables -->
+<div class="w3-content" id="current_offer">
+    	<i class="fa fa-asterisk w3-xxlarge"></i>
+        <i class="fa fa-diamond w3-xxlarge"></i>
+        <h1>current bid:</h1>
+        <p>1.00 offered by: nobody</p>
+        <div class="w3-half w3-margin-bottom">
+        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
+          <li class="w3-dark-grey w3-xlarge w3-padding-32">Current bid:</li>
+          <li class="w3-padding-16">current bid:
+          <span class="w3-right">1.00</span>
+          </li>
+          </ul>
+          </div>
+    </div>
+
+
+    <!--<div class="w3-row-padding" style="margin:0 -16px">-->
       <div class="w3-half w3-margin-bottom">
         <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
           <li class="w3-dark-grey w3-xlarge w3-padding-32">Basic</li>

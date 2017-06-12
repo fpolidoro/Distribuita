@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 1);
 
 // force HTTPS
 if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
