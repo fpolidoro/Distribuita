@@ -64,8 +64,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 		<p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed"/>
         
       	<div class="w3-section">
-          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
-          <input class="w3-input w3-border" type="password" placeholder="Password" name="pswLogin" required>
+          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" maxlength="128" name="usrname" required>
+          <input class="w3-input w3-border" type="password" placeholder="Password" maxlength="128" name="pswLogin" required>
           <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" onclick="return checkForm(this,loginError)" name="login">Login</button>
         </div>
       </form>
@@ -86,10 +86,10 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       <form class="w3-container" action="/action_page.php" method="POST" id="registerForm">
 		<p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"/>
         <div class="w3-section">
-          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
-          <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
+          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" maxlength="128" required>
+          <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" maxlength="128" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
           <p class="w3-text-black w3-small">*Password must contain at least a number and a letter</p>
-          <input class="w3-input w3-border" type="password" placeholder="Re-enter password*" name="checkpsw" id="checkpsw" required>
+          <input class="w3-input w3-border" type="password" maxlength="128" placeholder="Re-enter password*" name="checkpsw" id="checkpsw" required>
           <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" name="register">Register</button>
         </div>
       </form>
@@ -189,68 +189,36 @@ function hideErrorDIV(){
 ?>
 
     <!-- Grid for pricing tables -->
-<div class="w3-content" id="current_offer">
-    	<i class="fa fa-asterisk w3-xxlarge"></i>
-        <i class="fa fa-diamond w3-xxlarge"></i>
-        <h1>current bid:</h1>
-        <p>1.00 offered by: nobody</p>
-        <div class="w3-half w3-margin-bottom">
-        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-dark-grey w3-xlarge w3-padding-32">Current bid:</li>
-          <li class="w3-padding-16">current bid:
-          <span class="w3-right">1.00</span>
-          </li>
-          </ul>
-          </div>
-    </div>
-
-
     <!--<div class="w3-row-padding" style="margin:0 -16px">-->
-      <div class="w3-half w3-margin-bottom">
-        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-dark-grey w3-xlarge w3-padding-32">Basic</li>
-          <li class="w3-padding-16">Web Design</li>
-          <li class="w3-padding-16">Photography</li>
-          <li class="w3-padding-16">5GB Storage</li>
-          <li class="w3-padding-16">Mail Support</li>
-          <li class="w3-padding-16">
-            <h2>$ 10</h2>
-            <span class="w3-opacity">per month</span>
-          </li>
-          <li class="w3-light-grey w3-padding-24">
-            <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="w3-half">
-        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-dark-grey w3-xlarge w3-padding-32">Pro</li>
-          <li class="w3-padding-16">Web Design</li>
-          <li class="w3-padding-16">Photography</li>
-          <li class="w3-padding-16">50GB Storage</li>
-          <li class="w3-padding-16">Endless Support</li>
-          <li class="w3-padding-16">
-            <h2>$ 25</h2>
-            <span class="w3-opacity">per month</span>
-          </li>
-          <li class="w3-light-grey w3-padding-24">
-            <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
-          </li>
-        </ul>
-      </div>
+              <ul class="w3-ul">
+        <li>
+        <h1>Bid #1</h1>
+        <table class="w3-ul w3-white w3-opacity w3-hover-opacity-off w3-center">
+        <tr>
+          <th rowspan="3" class="w3-dark-grey w3-xlarge w3-padding" style="width: 25%; height: 100%;"><i class="fa fa-asterisk w3-jumbo"></i></th>
+          <th class="w3-dark-grey w3-xlarge" id="cur_text">starting from:</th>
+        </tr>
+        <tr>
+          <td class="w3-white w3-xxxlarge" id="cur_value">1.00 <i class="fa fa-eur w3-xlarge"></i></td>
+        </tr>
+        <tr>
+        <td class="w3-left w3-padding">offered by:<span class="w3-text-indigo w3-right" id="offered_by">p1@polito.it</span></td>
+        </tr>
+      </table>
+      </li>
+      </ul>
     <!-- End Grid/Pricing tables -->
     </div>
     
     <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
-    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <!--<i class="fa fa-facebook-official w3-hover-opacity"></i>
     <i class="fa fa-instagram w3-hover-opacity"></i>
     <i class="fa fa-snapchat w3-hover-opacity"></i>
     <i class="fa fa-pinterest-p w3-hover-opacity"></i>
     <i class="fa fa-twitter w3-hover-opacity"></i>
     <i class="fa fa-linkedin w3-hover-opacity"></i>
-    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>-->
   <!-- End footer -->
   </footer>
 
