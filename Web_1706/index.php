@@ -1,9 +1,6 @@
 <?php
 	require 'functions.php';
-	isUserAuthenticated();
-    if(userIsAuthN){
-    	//redirect on user page
-    }
+	isUserAuthenticated(false);
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,9 +21,10 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-hover-indigo-light:hover{color:#fff !important; background-color:#8995d6 !important}
 .hidden{display: none;}
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-#main {margin-left: 120px; margin-top:116px;}
+#main {margin-left: 120px; margin-top: 20px;}
+#iconBar{margin-top: 96px;}
 /* Remove margins from "page content" on small screens */
-@media only screen and (max-width: 600px) {#main {margin-left: 0} #myNavbar{margin-top:116px}}
+@media only screen and (max-width: 600px) {#main {margin-left: 0; margin-top: 60px;} #myNavbar{margin-top:116px}}
 </style>
 <body class="w3-indigo-extra-light">
   <!-- Header/Home -->
@@ -37,18 +35,13 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </h1>
 </header>
 <!-- Icon Bar (Sidebar - hidden on small screens) -->
-<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-text-indigo w3-indigo-extra-light">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-indigo w3-hover-white w3-hover-text-indigo">
-    <i class="fa fa-gavel w3-xxlarge"></i>
-    <p>BIDS</p>
-  </a>
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-text-indigo w3-indigo-extra-light" id="iconBar">
   <?php drawSidebar(); ?>
 </nav>
 
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
-  <div class="w3-bar w3-indigo w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <a href="#" class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">BIDS</a>
+  <div class="w3-bar w3-indigo-light w3-center w3-small">
     <?php drawNavbar(); ?>
   </div>
 </div>
@@ -83,7 +76,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
         <p class="w3-medium w3-text-indigo">REGISTER to Bid$</p>
 	  </header>
-      <form class="w3-container" action="/action_page.php" method="POST" id="registerForm">
+      <form class="w3-container" action="register.php" method="POST" id="registerForm">
 		<p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"/>
         <div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" maxlength="128" required>
@@ -157,8 +150,11 @@ function closeAndResetCard(){
 }
 
 function hideErrorDIV(){
-	$('#error').addClass('hidden');
-	$('#page').removeClass('hidden');
+	var errdiv = document.getElementById('error');
+	errdiv.style.display = 'none';
+
+	var pagediv = document.getElementById('page');
+	pagediv.style.display = 'block';
 }
 </script>
 
@@ -176,10 +172,10 @@ function hideErrorDIV(){
     	echo '<p class="w3-center">';
 	echo htmlentities($error);
 	echo '</p>';
-    	echo '<p class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center" onclick="hideErrorDIV()">';
+    	echo '<button class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center w3-button" onclick="hideErrorDIV()">';
     	echo '<i class="fa fa-home w3-large"></i>';
     	echo 'BACK TO HOME';
-  	echo '</p>';
+  	echo '</button>';
   	echo '</div>';
 	echo '<div class="w3-row-padding hidden" style="margin:0 -16px" id="page">';
         } else {

@@ -52,18 +52,17 @@ $redirectionPages = array(
 );
 
 
-$database = 'local';
+$database = 'cclix11';
 if ($database === 'local') {
   $host = 'localhost';
   $user = 'root';
   $pass = 'toor';
-  $db = 'users';
+  $db = 's231594';
 } else{
-  //require 'cclix_db_credentials.php';
-  //$host = $cclix_host; unset($cclix_host);
-  //$user = $cclix_user; unset($cclix_user);
-  //$pass = $cclix_pwd; unset($cclix_pwd);
-  //$db = $cclix_db; unset($cclix_db);
+  $host = 'localhost';
+  $user = 's231594';
+  $pass = 'ilsindis';
+  $db = 's231594';
 }
 
 ?>

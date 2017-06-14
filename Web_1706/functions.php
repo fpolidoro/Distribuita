@@ -3,7 +3,7 @@
 
     $userIsAuthN = false;
 
-function isUserAuthenticated(){
+function isUserAuthenticated($redirect){
     global $userIsAuthN, $maxInactivityPeriod;
     session_start();
     $t=time();
@@ -22,10 +22,12 @@ function isUserAuthenticated(){
         // Note: This will destroy the session, and not just the session data!
         destroySession();
 
-        // redirect client to home page (not the personal page)
-        //header('HTTP/1.1 307 temporary redirect');
-        //header('Location: index.php?msg=SessionTimeOut');
-        //exit; // IMPORTANT to avoid further output from the script
+        if($redirect){  //se sono già su index.php non devo redirigere, redirigo solo se sono sulle pagine del profilo
+            // redirect client to home page (not the personal page)
+            header('HTTP/1.1 307 temporary redirect');
+            header('Location: index.php?msg=SessionTimeOut');
+            exit; // IMPORTANT to avoid further output from the script
+        }
         
     } else {    //user is still authN, so update time of cookie
         $_SESSION['time']=time(); /* update time */
@@ -41,18 +43,21 @@ function destroySession(){
             $params["secure"], $params["httponly"]
             ); //sets current non-expired cookie to a date in the past, so that it will be thrown away by the browser
         }
+        session_unset();
         session_destroy();  // destroy session
 }
 
 function dbConnect(){
     global $host, $user, $pass, $db;
 
-    $conn = mysql_connect($host, $user, $pass, $db);
+    $conn = new mysqli($host, $user, $pass, $db);
     if($conn->connect_error) {
-        die('<div style="color:#fff;background-color:#f44336"><h1>Connection with database failed</h1><h3>Please contact the system administrator</h3></div>');
+        redirectWithError("Connection with database failed");
+        //die('<div style="color:#fff;background-color:#f44336"><h1>Connection with database failed</h1><h3>Please contact the system administrator</h3></div>');
     }
     if(!$conn) {
-        die('impossible to connect to database');
+        redirectWithError("impossible to connect to database");
+        //die('impossible to connect to database');
     }
     // the db credentials are not more needed so unset them for security reasons
     unset($host);
@@ -85,29 +90,39 @@ function signup($conn, $email, $password) {
     if(!$result) {  //se il risultato == 0, errore nella query
         redirectWithError('Impossible to create the query');
     }
-    if($result->num_rows == 0) {
+    if($result->num_rows != 0) {
         // both if password wrong or if non-existing account
-        redirectWithError('This email is already registered.');
+        //redirectWithError('This email is already registered.');
+        $error = 'This email is already registered.';
+        header('Location: index.php?error='.urlencode($error));
+        die();
     }
     $result->close(); //free memory of buffer so that the db can be used by other queries
     unset($result);
 
     $result = $conn->query("INSERT INTO users(uid, upsw) VALUES('$email', '$password')");
     if(!$result) {
-        redirectWithError('Impossible to create the account.');
+        //redirectWithError('Impossible to create the account.');
+        $error = 'Impossible to create the account.';
+        header('Location: index.php?error='.urlencode($error));
+        die();
     }
     // the id of the last inserted value
     $id = $conn->insert_id;
     if(!$conn->commit()) {
-        redirectWithError('Impossible to commit. Please try again');
+        //redirectWithError('Impossible to commit. Please try again');
+        $error = 'Impossible to commit. Please try again';
+        header('Location: index.php?error='.urlencode($error));
+        die();
     }
     // save into the session array
     $_SESSION['time'] = time();
     $_SESSION['email'] = $email;
     $_SESSION['password'] = $password;
     $_SESSION['user_id'] = $id;
-    // and go to the right place
-    goToDestination();
+    
+    header('Location: index.php');
+    die();
 }
 
 //for large/medium screens
@@ -115,8 +130,15 @@ function drawSidebar(){
     global $userIsAuthN;
 
     if($userIsAuthN){
+        //print email of user
+        echo '<div class="w3-text-indigo w3-white w3-padding w3-animate-left"><h6>HELLO <br>'.$_SESSION['email'].'<h6></div>';
+        //bids
+        echo '<a href="index.php" class="w3-bar-item w3-button w3-padding-large w3-indigo w3-hover-white w3-hover-text-indigo">';
+        echo '<i class="fa fa-gavel w3-xxlarge"></i>';
+        echo '<p>BIDS</p>';
+        echo '</a>';
         //my offers
-        echo '<a class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo">';
+        echo '<a class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo" href="profile.php">';
         echo '<i class="fa fa-money w3-xxlarge"></i>';
         echo '<p>MY OFFERS</p>';
         echo '</a>';
@@ -126,7 +148,12 @@ function drawSidebar(){
         echo '<p>LOGOUT</p>';
         echo '</a>';
     }else{  //user is not authN
-    //login
+        //bids
+        echo '<a href="index.php" class="w3-bar-item w3-button w3-padding-large w3-indigo w3-hover-white w3-hover-text-indigo">';
+        echo '<i class="fa fa-gavel w3-xxlarge"></i>';
+        echo '<p>BIDS</p>';
+        echo '</a>';
+        //login
         echo '<button onclick="showLoginCard()" class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo">';
         echo '<i class="fa fa-user w3-xxlarge"></i>';
         echo '<p>LOGIN</p>';
@@ -137,10 +164,13 @@ function drawSidebar(){
 function drawNavbar(){ //for small screens
     global $userIsAuthN;
     if($userIsAuthN){
-        echo '<a class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">MY OFFERS</a>';
-        echo '<a class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">LOGOUT</a>';
+        echo '<a class="w3-bar-item w3-indigo" style="border-style: solid; border-top:0px; border-left:0px; border-bottom:0px; width:25% !important">HELLO '.$_SESSION['email'].'</a>';
+        echo '<a href="index.php" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">BIDS</a>';
+        echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important" href="profile.php">MY OFFERS</a>';
+        echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">LOGOUT</a>';
     }else{
-        echo '<a onclick="showLoginCard()" class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">LOGIN</a>';
+        echo '<a href="index.php" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">BIDS</a>';
+        echo '<a onclick="showLoginCard()" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">LOGIN</a>';
     }
 }
 

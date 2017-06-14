@@ -1,9 +1,6 @@
 <?php
 	require 'functions.php';
-	isUserAuthenticated();
-    if(userIsAuthN){
-    	//redirect on user page
-    }
+	isUserAuthenticated(true);
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,9 +21,10 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-hover-indigo-light:hover{color:#fff !important; background-color:#8995d6 !important}
 .hidden{display: none;}
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-#main {margin-left: 120px; margin-top:116px;}
+#main {margin-left: 120px; margin-top: 20px;}
+#iconBar{margin-top: 96px;}
 /* Remove margins from "page content" on small screens */
-@media only screen and (max-width: 600px) {#main {margin-left: 0} #myNavbar{margin-top:116px}}
+@media only screen and (max-width: 600px) {#main {margin-left: 0; margin-top: 60px;} #myNavbar{margin-top:116px}}
 </style>
 <body class="w3-indigo-extra-light">
   <!-- Header/Home -->
@@ -37,18 +35,13 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </h1>
 </header>
 <!-- Icon Bar (Sidebar - hidden on small screens) -->
-<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-text-indigo w3-indigo-extra-light">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-indigo w3-hover-white w3-hover-text-indigo">
-    <i class="fa fa-gavel w3-xxlarge"></i>
-    <p>BIDS</p>
-  </a>
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-text-indigo w3-indigo-extra-light" id="iconBar">
   <?php drawSidebar(); ?>
 </nav>
 
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
-  <div class="w3-bar w3-indigo w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <a href="#" class="w3-bar-item w3-button w3-hover-indigo-light" style="width:25% !important">BIDS</a>
+  <div class="w3-bar w3-indigo-light w3-center w3-small">
     <?php drawNavbar(); ?>
   </div>
 </div>
@@ -83,7 +76,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
         <p class="w3-medium w3-text-indigo">REGISTER to Bid$</p>
 	  </header>
-      <form class="w3-container" action="/action_page.php" method="POST" id="registerForm">
+      <form class="w3-container" action="register.php" method="POST" id="registerForm">
 		<p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"/>
         <div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
@@ -168,8 +161,11 @@ function closeAndResetCard(){
 }
 
 function hideErrorDIV(){
-	$('#error').addClass('hidden');
-	$('#page').removeClass('hidden');
+	var errdiv = document.getElementById('error');
+	errdiv.style.display = 'none';
+
+	var pagediv = document.getElementById('page');
+	pagediv.style.display = 'block';
 }
 </script>
 
@@ -178,7 +174,7 @@ function hideErrorDIV(){
 <div class="w3-padding-large" id="main">
   <!-- About Section -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
-	<!--<?php 
+	<?php 
 	      if(isset($_REQUEST['error'])) {
           $error = $_REQUEST['error'];
 
@@ -197,7 +193,7 @@ function hideErrorDIV(){
           $error = false;
           echo '<div class="w3-row-padding" style="margin:0 -16px" id="page">';
         }
-?>-->
+?>
 
     <!-- Grid for pricing tables -->
     <div class="w3-row-padding" style="margin:0 -16px">
@@ -205,7 +201,7 @@ function hideErrorDIV(){
           <li>
             <h1>Bid #1</h1>
             
-            <ul class="w3-ul w3-indigo-light">
+            <ul class="w3-ul w3-indigo w3-opacity w3-hover-opacity-off">
               <li>
               	<h1>your current offer:</h1>
               </li>
@@ -218,23 +214,27 @@ function hideErrorDIV(){
             <table class="w3-table w3-white w3-center">
               <tr>
                 <th class="w3-dark-grey w3-xlarge w3-padding w3-center" style="width: 25%; height: 100%;"></th>
-                <th class="w3-dark-grey w3-xlarge" id="cur_text">your new offer:</th>
+                <th class="w3-dark-grey w3-xlarge" style="border-style: solid; border-right:0px; border-top: 0px; border-bottom:0px; border-color:white" id="cur_text">your new offer:</th>
               </tr>
               <tr>
-              <td><i class="fa fa-star w3-jumbo w3-center" style="margin-top: 70px"></i></td>
-                  <td class="w3-white w3-xxlarge" id="cur_value">
+              	<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i>
+                </td>
+                <td class="w3-white w3-xxlarge" id="cur_value">
                       <input type="text" id="offer" pattern="[0-9]{1,7}\.?[0-9]{1,2}" maxlength="10" style="width:75%">
                       <i class="fa fa-eur w3-xlarge"></i>
-                  </td>
-              </tr>
-              <tr>
-              <td></td>
-                <td>
-                  <p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR 1.00 or more</p>
-                  <p class="w3-indigo w3-hover-indigo-light w3-padding w3-center">PLACE BID</p>
                 </td>
               </tr>
-          	</table>
+              <tr>
+              <td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td>
+                <td class="w3-white">
+                  <p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR 1.00 or more</p>
+                </td>
+              </tr>
+              <tr>
+              <td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td>
+              	<th class="w3-indigo w3-hover-indigo-light w3-padding w3-center w3-large">PLACE BID</th>
+              </tr>
+          	</table>          
         	</li>
       	</ul>
     <!-- End Grid/Pricing tables -->
