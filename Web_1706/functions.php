@@ -128,7 +128,7 @@ function login($conn, $email, $password) {
     if(!$result) {  //se il risultato == 0, errore nella query
         redirectWithError('Impossible to create the query');
     }
-    if($result->num_rows != 0) {
+    if($result->num_rows == 0) {
         // both if password wrong or if non-existing account
         //redirectWithError('This email is already registered.');
         $error = 'Wrong username and/or password.';
@@ -143,7 +143,8 @@ function login($conn, $email, $password) {
     $_SESSION['email'] = $email;
     $_SESSION['password'] = $password;
     
-    header('Location: index.php');
+    //redirect on user's profile
+    header('Location: profile.php');
     die();
 }
 
@@ -165,7 +166,7 @@ function drawSidebar(){
         echo '<p>MY OFFERS</p>';
         echo '</a>';
         //logout
-        echo '<a class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo">';
+        echo '<a class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo" href="logout.php">';
         echo '<i class="fa fa-external-link-square w3-xxlarge"></i>';
         echo '<p>LOGOUT</p>';
         echo '</a>';
@@ -189,7 +190,7 @@ function drawNavbar(){ //for small screens
         echo '<a class="w3-bar-item w3-indigo" style="border-style: solid; border-top:0px; border-left:0px; border-bottom:0px; width:25% !important">HELLO '.$_SESSION['email'].'</a>';
         echo '<a href="index.php" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">BIDS</a>';
         echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important" href="profile.php">MY OFFERS</a>';
-        echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">LOGOUT</a>';
+        echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important" href="logout.php">LOGOUT</a>';
     }else{
         echo '<a href="index.php" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">BIDS</a>';
         echo '<a onclick="showLoginCard()" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">LOGIN</a>';

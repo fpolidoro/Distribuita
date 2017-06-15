@@ -53,13 +53,13 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
         <p class="w3-medium w3-text-indigo">LOGIN to Bid$</p>
 	  </header>
-      <form class="w3-container" id="loginForm" method="POST">
+      <form class="w3-container" id="loginForm" method="POST" action="login.php">
 		<p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed"/>
         
       	<div class="w3-section">
           <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Password" name="pswLogin" required>
-          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" onclick="return checkForm(this,loginError)" name="login">Login</button>
+          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" name="login">Login</button>
         </div>
       </form>
       <div class="w3-container" style="padding-top:0px">
@@ -188,7 +188,7 @@ function hideErrorDIV(){
     	echo 'BACK TO HOME';
   	echo '</p>';
   	echo '</div>';
-	echo '<div class="w3-row-padding hidden" style="margin:0 -16px" id="page">';
+	echo '<div class="w3-row-padding w3-animate-bottom hidden" style="margin:0 -16px" id="page">';
         } else {
           $error = false;
           echo '<div class="w3-row-padding" style="margin:0 -16px" id="page">';
