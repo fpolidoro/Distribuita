@@ -108,7 +108,6 @@ function signup($conn, $email, $password) {
         die();
     }
     // the id of the last inserted value
-    $id = $conn->insert_id;
     if(!$conn->commit()) {
         //redirectWithError('Impossible to commit. Please try again');
         $error = 'Impossible to commit. Please try again';
@@ -119,7 +118,30 @@ function signup($conn, $email, $password) {
     $_SESSION['time'] = time();
     $_SESSION['email'] = $email;
     $_SESSION['password'] = $password;
-    $_SESSION['user_id'] = $id;
+    
+    header('Location: index.php');
+    die();
+}
+
+function login($conn, $email, $password) {
+    $result = $conn->query("SELECT uid, upsw FROM users WHERE uid = '$email' AND upsw='$password'");
+    if(!$result) {  //se il risultato == 0, errore nella query
+        redirectWithError('Impossible to create the query');
+    }
+    if($result->num_rows != 0) {
+        // both if password wrong or if non-existing account
+        //redirectWithError('This email is already registered.');
+        $error = 'Wrong username and/or password.';
+        header('Location: index.php?error='.urlencode($error));
+        die();
+    }
+    $result->close(); //free memory of buffer so that the db can be used by other queries
+    unset($result);
+
+    // save into the session array
+    $_SESSION['time'] = time();
+    $_SESSION['email'] = $email;
+    $_SESSION['password'] = $password;
     
     header('Location: index.php');
     die();
