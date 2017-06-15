@@ -32,7 +32,10 @@
             header('Location: index.php?error='.urlencode($error));
             die();
         }
-               
-        login($conn, $email, $psw);
+        
+          //hash of password
+        $hashedpsw = hash('sha256', $psw);
+          
+        login($conn, $email, $hashedpsw);
     }
 ?>
