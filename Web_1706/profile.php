@@ -1,6 +1,8 @@
 <?php
 	require 'functions.php';
 	isUserAuthenticated(true);
+
+	$conn = dbConnect();
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,130 +48,6 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </div>
 </div>
 
-<!-- Login modal -->
-  <div id="loginCard" class="w3-modal">
-      <div class="w3-modal-content w3-card-4 w3-animate-left">
-      <header class="w3-container w3-center">
-      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
-        <p class="w3-medium w3-text-indigo">LOGIN to Bid$</p>
-	  </header>
-      <form class="w3-container" id="loginForm" method="POST" action="login.php">
-		<p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed"/>
-        
-      	<div class="w3-section">
-          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" name="usrname" required>
-          <input class="w3-input w3-border" type="password" placeholder="Password" name="pswLogin" required>
-          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" name="login">Login</button>
-        </div>
-      </form>
-      <div class="w3-container" style="padding-top:0px">
-      <p class="w3-text-black w3-center">or</p>
-      <button class="w3-button w3-block w3-section w3-indigo w3-padding w3-hover-indigo-light" onclick="switchCards()">Register</button>
-      </div>
-      </div>
-  </div>
-
-<!-- Register modal -->
-    <div id="registerCard" class="w3-modal">
-      <div class="w3-modal-content w3-card-4 w3-animate-right">
-      <header class="w3-container w3-center">
-      	<i class="fa fa-times w3-text-indigo w3-hover-text-red w3-xxlarge w3-display-topright w3-padding" onclick="closeAndResetCard()" title="Close Modal"></i>
-        <p class="w3-medium w3-text-indigo">REGISTER to Bid$</p>
-	  </header>
-      <form class="w3-container" action="register.php" method="POST" id="registerForm">
-		<p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"/>
-        <div class="w3-section">
-          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" required>
-          <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
-          <p class="w3-text-black w3-small">*Password must contain at least a number and a letter</p>
-          <input class="w3-input w3-border" type="password" placeholder="Re-enter password*" name="checkpsw" id="checkpsw" required>
-          <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" name="register">Register</button>
-        </div>
-      </form>
-
-      <div class="w3-container w3-padding">
-        <p class="w3-text-black w3-right">Already a member? <span onclick="switchCards()" class="w3-hover-text-red w3-text-indigo">Login</span></p>
-      </div>
-      </div>
-  </div>
-
-<script type="text/javascript">
-var password = document.getElementById("newpsw")
-  , confirm_password = document.getElementById("checkpsw");
-  
-
-function validatePassword(){
-  if(password.value != confirm_password.value) {
-    confirm_password.setCustomValidity("Passwords Don't Match");
-    document.getElementById("registerFailed").innerHTML = "passwords must match";
-  } else {
-    confirm_password.setCustomValidity('');
-    document.getElementById("registerFailed").innerHTML = "";
-  }
-}
-
-password.onchange = validatePassword;
-confirm_password.onkeyup = validatePassword;
-
-function isNumber() {
-	var n = document.getElementNyId("offer");
-  if(!isNaN(parseFloat(n.value)) && isFinite(n.value)){
-  	n.setCustomValidity('');
-  }else{
-  	n.setCustomValidity('Value must be a number');
-  }
-}
-
-offer.onchange = isNumber;
-
-function switchCards() {
-    var login = document.getElementById('loginCard');
-    var register = document.getElementById('registerCard');
-    var logForm = document.getElementById('loginForm');
-    var regForm = document.getElementById('registerForm');
-    
-    
-    if (login.style.display === 'none') {
-        login.style.display = 'block';
-        register.style.display = 'none';
-        regForm.reset();
-    } else {
-        login.style.display = 'none';
-        register.style.display = 'block';
-        logForm.reset();
-    }
-}
-
-function showLoginCard(){
-	document.getElementById('loginCard').style.display='block';
-}
-
-function closeAndResetCard(){
-	var login = document.getElementById('loginCard');
-    var register = document.getElementById('registerCard');
-    var logForm = document.getElementById('loginForm');
-    var regForm = document.getElementById('registerForm');
-    
-    if (login.style.display === 'block') {
-        login.style.display = 'none';
-        logForm.reset();
-    }
-    if(register.style.display = 'block'){
-		register.style.display = 'none';
-        regForm.reset();
-    }
-}
-
-function hideErrorDIV(){
-	var errdiv = document.getElementById('error');
-	errdiv.style.display = 'none';
-
-	var pagediv = document.getElementById('page');
-	pagediv.style.display = 'block';
-}
-</script>
-
-
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
   <!-- About Section -->
@@ -178,17 +56,17 @@ function hideErrorDIV(){
 	      if(isset($_REQUEST['error'])) {
           $error = $_REQUEST['error'];
 
-	echo '<div class="w3-content w3-card w3-justify w3-text-grey w3-white" id="error">';
-  	echo '<h1 class="w3-center w3-text-red">ERROR</h1>';
-    	echo '<p class="w3-center">';
-	echo htmlentities($error);
-	echo '</p>';
-    	echo '<p class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center" onclick="hideErrorDIV()">';
-    	echo '<i class="fa fa-home w3-large"></i>';
-    	echo 'BACK TO HOME';
-  	echo '</p>';
-  	echo '</div>';
-	echo '<div class="w3-row-padding w3-animate-bottom hidden" style="margin:0 -16px" id="page">';
+          echo '<div class="w3-content w3-card w3-justify w3-text-grey w3-white" id="error">';
+          echo '<h1 class="w3-center w3-text-red">ERROR</h1>';
+          echo '<p class="w3-center">';
+          echo htmlentities($error);
+          echo '</p>';
+          echo '<button class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center w3-button w3-block" onclick="hideErrorDIV()">';
+          echo '<i class="fa fa-home w3-large"></i>';
+          echo 'BACK TO HOME';
+          echo '</button>';
+          echo '</div>';
+          echo '<div class="w3-row-padding hidden w3-animate-bottom" style="margin:0 -16px" id="page">';
         } else {
           $error = false;
           echo '<div class="w3-row-padding" style="margin:0 -16px" id="page">';
@@ -196,9 +74,10 @@ function hideErrorDIV(){
 ?>
 
     <!-- Grid for pricing tables -->
-    <div class="w3-row-padding" style="margin:0 -16px">
+    <!--<div class="w3-row-padding" style="margin:0 -16px">-->
         <ul class="w3-ul w3-padding">
-          <li>
+        <?php drawUsersTHR(); ?>
+          <!--<li>
             <h1>Bid #1</h1>
             
             <ul class="w3-ul w3-indigo w3-opacity w3-hover-opacity-off">
@@ -220,7 +99,7 @@ function hideErrorDIV(){
               	<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i>
                 </td>
                 <td class="w3-white w3-xxlarge" id="cur_value">
-                      <input type="text" id="offer" pattern="[0-9]{1,7}\.?[0-9]{1,2}" maxlength="10" style="width:75%">
+                      <input type="text" id="thr" pattern="[0-9]{1,10}\.?[0-9]{1,2}" maxlength="13" style="width:75%">
                       <i class="fa fa-eur w3-xlarge"></i>
                 </td>
               </tr>
@@ -228,6 +107,7 @@ function hideErrorDIV(){
               <td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td>
                 <td class="w3-white">
                   <p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR 1.00 or more</p>
+		<p class="hidden" id="thr">1.00</p>
                 </td>
               </tr>
               <tr>
@@ -236,9 +116,39 @@ function hideErrorDIV(){
               </tr>
           	</table>          
         	</li>
-      	</ul>
+      	</ul>-->
     <!-- End Grid/Pricing tables -->
     </div>
+  </div>
+
+<script type="text/javascript">
+var thr = document.getElementById('thr');
+  
+function hideErrorDIV(){
+	var errdiv = document.getElementById('error');
+	errdiv.style.display = 'none';
+
+	var pagediv = document.getElementById('page');
+	pagediv.style.display = 'block';
+}
+
+function isNumberAndGEMaxBid() {
+  if(!isNaN(parseFloat(thr.value)) && isFinite(thr.value)){
+  	thr.setCustomValidity('ciao');
+  }else{
+  	thr.setCustomValidity('Value must be a number');
+  }
+  
+  if(parseFloat(thr.value) < parseFloat(maxbid)){
+	thr.setCustomValidity("Your offer must be greater than or equal to current bid");
+  }else{
+	thr.setCustomValidity('value > maxnid');
+  }
+}
+
+thr.onchange = isNumberAndGEMaxBid;
+
+</script>
     
     <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
@@ -251,6 +161,7 @@ function hideErrorDIV(){
     <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>-->
   <!-- End footer -->
   </footer>
+
 
 <!-- END PAGE CONTENT -->
 </div>

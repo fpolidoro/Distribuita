@@ -86,8 +86,8 @@ function getRedirectionPageError(){
 }
 
 function signup($conn, $email, $password) {
-    $result = $conn->query("SELECT uid FROM users WHERE uid = '$email'");
-    if(!$result) {  //se il risultato == 0, errore nella query
+    $result = $conn->query("SELECT uid FROM users WHERE uid = '$email' FOR UPDATE");
+    if(!$result) {  //se il risultato false, errore nella query
         redirectWithError('Impossible to create the query');
     }
     if($result->num_rows != 0) {
@@ -102,12 +102,11 @@ function signup($conn, $email, $password) {
 
     $result = $conn->query("INSERT INTO users(uid, upsw) VALUES('$email', '$password')");
     if(!$result) {
-        //redirectWithError('Impossible to create the account.');
-        $error = 'Impossible to create the account.';
+        $error = 'Impossible to create the account. Maybe email already exists.';
         header('Location: index.php?error='.urlencode($error));
         die();
     }
-    // the id of the last inserted value
+
     if(!$conn->commit()) {
         //redirectWithError('Impossible to commit. Please try again');
         $error = 'Impossible to commit. Please try again';
@@ -124,17 +123,26 @@ function signup($conn, $email, $password) {
 }
 
 function login($conn, $email, $password) {
+    //Here select doesn't need to be "for update" because we are just checking whether the user
+    //exists and therefore can authN.
     $result = $conn->query("SELECT uid, upsw FROM users WHERE uid = '$email' AND upsw='$password'");
-    if(!$result) {  //se il risultato == 0, errore nella query
+    if(!$result) {  //se il risultato false, errore nella query
         redirectWithError('Impossible to create the query');
     }
     if($result->num_rows == 0) {
         // both if password wrong or if non-existing account
-        //redirectWithError('This email is already registered.');
         $error = 'Wrong username and/or password.';
         header('Location: index.php?error='.urlencode($error));
         die();
     }
+
+//SELECT returns also a result object
+if(!$result->fetch_object()){
+    $error = 'Query failed while fetching the result.';
+    header('Location: index.php?error='.urlencode($error));
+    die();
+}
+
     $result->close(); //free memory of buffer so that the db can be used by other queries
     unset($result);
 
@@ -198,7 +206,7 @@ function drawNavbar(){ //for small screens
 }
 
 //forse questa riesce a sostituire il redirectWithError
-function drawError(){
+/*function drawError(){
     if(isset($_REQUEST['error'])) {
         $error = $_REQUEST['error'];
 
@@ -207,17 +215,224 @@ function drawError(){
     	echo '<p class="w3-center">';
 	    echo htmlentities($error);
 	    echo '</p>';
-    	echo '<p class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center" onclick="hideErrorDIV()">';
+    	echo '<button class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center w3-button w3-block" onclick="hideErrorDIV()">';
     	echo '<i class="fa fa-home w3-large"></i>';
     	echo 'BACK TO HOME';
-  	    echo '</p>';
+  	    echo '</button>';
   	    echo '</div>';
 	    echo '<div class="w3-row-padding hidden" style="margin:0 -16px" id="page">';
     } else {
         $error = false;
         echo '<div class="w3-row-padding" style="margin:0 -16px" id="page">';
     }
+}*/
+
+function drawBids(){
+    global $conn;
+    $result = $conn->query("SELECT * FROM bids");
+    if(!$result) {  //se il risultato false, errore nella query
+        redirectWithError('Impossible to create the query');
+    }
+
+    if ($result->num_rows > 0) {
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+            if($row["uid"] == NULL){
+                $symbol = "fa-asterisk";
+                $str = "starting from:";
+                $td = '<td class="w3-left w3-padding hidden">offered by:<span class="w3-text-indigo w3-right" id="offered_by"></span></td>';
+            }else{
+                $symbol = "fa-diamond";
+                $str = "current bid:";
+                $td = '<td class="w3-left w3-padding">offered by:<span class="w3-text-indigo w3-right" id="offered_by">'. $row["uid"] .'</span></td>';
+            }
+
+            echo '<li>';
+            echo '<h1>Bid #'.$row["bid_id"].'</h1>';
+            echo '<table class="w3-ul w3-white w3-opacity w3-hover-opacity-off w3-center">';
+            echo '<tr>';
+            echo '<th rowspan="3" class="w3-dark-grey w3-xlarge w3-padding" style="width: 25%; height: 100%;"><i class="fa '. $symbol .' w3-jumbo"></i></th>';
+            echo '<th class="w3-dark-grey w3-xlarge" id="cur_text">'. $str .'</th>';
+            echo '</tr>';
+            echo '<tr>';
+            echo '<td class="w3-white w3-xxxlarge" id="cur_value">'. $row["value"] .'<i class="fa fa-eur w3-xlarge"></i></td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo $td;
+            echo '</tr>';
+            echo '</table>';
+            echo '</li>';
+        }
+    }else{
+        $error = 'No bids currently open';
+        header('Location: index.php?error='.urlencode($error));
+        die();
+    }
 }
 
+function drawUsersTHR(){
+    global $conn;
+    $email = $_SESSION['email'];
+    //join between offers and bids to retrieve the maxbidder and maxbid for each bid
+    $result = $conn->query("SELECT offers.bid_id, offers.value AS thr, bids.uid AS maxbidder, bids.value AS maxbid FROM offers INNER JOIN bids ON offers.bid_id = bids.bid_id WHERE offers.uid='$email'");
+    if(!$result) {  //se il risultato false, errore nella query
+        redirectWithError('Impossible to create the query');
+    }
 
+    if ($result->num_rows > 0) {
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+            echo '<li>';
+            echo '<h1>Bid #'. $row['bid_id'] .'</h1>';
+            
+            echo '<ul class="w3-ul w3-indigo w3-opacity w3-hover-opacity-off"><li><h1>your current offer:</h1></li>';
+            echo '<li class="w3-white"><h1 class="w3-large">'. $row["thr"] .'</h1></li>';
+            if($row['maxbidder'] == $email){
+                echo '<li class="w3-white w3-text-green hidden">you are the highest bidder</li>';
+            }else{
+              echo '<li class="w3-white w3-text-red">bid exceeded</li>';
+            }
+            echo '</ul><br>';
+
+            echo '<table class="w3-table w3-white w3-center"><form action="placebid.php" method="POST"><tr><th class="w3-dark-grey w3-xlarge w3-padding w3-center" style="width: 25%; height: 100%;"></th>';
+            echo '<th class="w3-dark-grey w3-xlarge" style="border-style: solid; border-right:0px; border-top: 0px; border-bottom:0px; border-color:white" id="cur_text">your new offer:</th></tr><tr>';
+            echo '<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i></td>';
+            echo '<td class="w3-white w3-xxlarge" id="cur_value">';
+            //input field
+            echo '<input type="text" name="thr" pattern="[0-9]{1,7}\.?[0-9]{1,2}" maxlength="13" style="width:75%">';
+            echo '<i class="fa fa-eur w3-xlarge"></i></td></tr>';
+            echo '<tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td><td class="w3-white">';
+            echo '<p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR '. $row["maxbid"] .' or more</p>';
+            echo '<p class="hidden" id="maxbid">'.$row["maxbid"].'</p>';
+            echo '</td></tr><tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td>';
+            echo '<th class="w3-center w3-large" style="padding: 0px"><button class="w3-button w3-block w3-indigo w3-hover-indigo-light" type="submit" name="placebid">PLACE BID</button></th>';
+            echo '</tr></form></table>';   
+        	echo '</li>';
+        }
+
+        $result->close();
+        die();
+    }
+    $result->close();
+    
+    //user hasn't placed any thr yet'
+    $result = $conn->query("SELECT * FROM bids");
+    if(!$result) {  //se il risultato false, errore nella query
+        redirectWithError('Impossible to create the query');
+    }
+    if ($result->num_rows > 0) {
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+            echo '<li>';
+            echo '<h1>Bid #'. $row['bid_id'] .'</h1>';
+            
+            echo '<ul class="w3-ul w3-indigo w3-opacity w3-hover-opacity-off"><li><h1>your current offer:</h1></li>';
+            echo '<li class="w3-white"><h1 class="w3-large">you have not made any offer yet</h1></li>';
+            echo '</ul><br>';
+
+            echo '<table class="w3-table w3-white w3-center"><form action="placebid.php" method="POST"><tr><th class="w3-dark-grey w3-xlarge w3-padding w3-center" style="width: 25%; height: 100%;"></th>';
+            echo '<th class="w3-dark-grey w3-xlarge" style="border-style: solid; border-right:0px; border-top: 0px; border-bottom:0px; border-color:white" id="cur_text">your new offer:</th></tr><tr>';
+            echo '<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i></td>';
+            echo '<td class="w3-white w3-xxlarge" id="cur_value">';
+            //input field
+            echo '<input type="text" name="thr" pattern="[0-9]{1,7}\.?[0-9]{1,2}" maxlength="13" style="width:75%">';
+            echo '<i class="fa fa-eur w3-xlarge"></i></td></tr>';
+            echo '<tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td><td class="w3-white">';
+            echo '<p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR '. $row["value"] .' or more</p>';
+            echo '<p class="hidden" id="maxbid">'.$row["value"].'</p>';
+            echo '</td></tr><tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td>';
+            echo '<th class="w3-center w3-large" style="padding: 0px"><button class="w3-button w3-block w3-indigo w3-hover-indigo-light" type="submit" name="placebid">PLACE BID</button></th>';
+            echo '</tr></form></table>';   
+        	echo '</li>';
+        }
+    }
+
+    $result->close();
+    die();
+}
+
+function computeBid($conn, $thr){
+    $result = $conn->query("SELECT * FROM bids FOR UPDATE");
+    if(!$result || $result->num_rows == 0) {  //se il risultato false, errore nella query
+        redirectWithError('Impossible to create the query');
+    }
+
+    //for sake of simplicity, bids contains only an entry, so it is ok to fetch the first row (that'll be the only one)
+    $res = $result->fetch_assoc();
+    if($thr < $res["value"]){
+        $error = 'your offer cannot be lower than the current bid.';
+        $result->close();
+        header('Location: index.php?error='.urlencode($error));
+        die();
+    }
+    $bid_id = $row["bid_id"];
+    $email = $_SESSION["email"];
+    
+    //insert thr into offers
+    $result->close();
+    $result = $conn->query("INSERT INTO offers(bid_id, uid, value) VALUES($bid_id, '$email', $thr)");
+    if(!$result) { 
+        $error = 'Cannot insert your thr.';
+        header('Location: index.php?error='.urlencode($conn->error));
+        die();
+    }
+
+    //compute new bid
+    $result = $conn->query("SELECT uid FROM offers WHERE bid_id='$bid_id' AND value = (SELECT MAX(value) FROM offers WHERE bid_id = '$bid_id') FOR UPDATE");
+    if(!$result || $result->num_rows == 0) {
+        $error = 'An issue occurred while computing new bid.';
+        header('Location: index.php?error='.urlencode($conn->error));
+        die();
+    }
+    $res2 = $result->fetch_assoc();
+    $maxbidder = $res2["uid"];
+
+    $result->close();
+    //select the second max value among thrs.
+    $result = $conn->query("SELECT MAX(value) FROM offers WHERE bid_id='$bid_id' AND uid != '$maxbidder' FOR UPDATE");
+    if(!$result) {
+        $error = 'An issue occurred while computing new bid.';
+        header('Location: index.php?error='.urlencode($conn->error));
+        die();
+    }
+    if($result->num_rows == 0){ //there are no other users having thr set, so bid remains unaltered
+        $result->close();
+        $result = $conn->query("UPDATE bids SET uid ='$maxbidder' WHERE bid_id = '$bid_id'");
+        if(!$result) {
+            $error = 'An issue occurred while updating bid.';
+            header('Location: index.php?error='.urlencode($conn->error));
+            die();
+        }
+        $result->close();
+        if(!$conn->commit()){
+            $error = 'An issue occurred while committing new bid.';
+            header('Location: index.php?error='.urlencode($conn->error));
+            die();
+        }
+        //successful commit, redirect user to profile page
+        header('Location: profile.php');
+        die();
+    }
+
+    //there are users having thr set, so compute highest bid
+    $res3 = $result->fetch_assoc();
+    $maxbid = $res3["value"];
+    $maxbid += 0.01;
+    $result->close();
+    $result = $conn->query("UPDATE bids SET uid ='$maxbidder', value='$maxbid' WHERE bid_id = '$bid_id'");
+    if(!$result) {
+        $error = 'An issue occurred while updating bid.';
+        header('Location: index.php?error='.urlencode($conn->error));
+        die();
+    }
+    $result->close();
+    if(!$conn->commit()){
+        $error = 'An issue occurred while committing new bid.';
+        header('Location: index.php?error='.urlencode($conn->error));
+        die();
+    }
+    //successful commit, redirect user to profile page
+    header('Location: profile.php');
+    die();
+}
 ?>

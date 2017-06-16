@@ -1,6 +1,8 @@
 <?php
 	require 'functions.php';
 	isUserAuthenticated(false);
+
+	$conn = dbConnect();
 ?>
 <!DOCTYPE html>
 <html>
@@ -167,17 +169,17 @@ function hideErrorDIV(){
 	      if(isset($_REQUEST['error'])) {
           $error = $_REQUEST['error'];
 
-	echo '<div class="w3-content w3-card w3-justify w3-text-grey w3-white" id="error">';
-  	echo '<h1 class="w3-center w3-text-red">ERROR</h1>';
-    	echo '<p class="w3-center">';
-	echo htmlentities($error);
-	echo '</p>';
-    	echo '<button class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center w3-button" onclick="hideErrorDIV()">';
-    	echo '<i class="fa fa-home w3-large"></i>';
-    	echo 'BACK TO HOME';
-  	echo '</button>';
-  	echo '</div>';
-	echo '<div class="w3-row-padding hidden w3-animate-bottom" style="margin:0 -16px" id="page">';
+          echo '<div class="w3-content w3-card w3-justify w3-text-grey w3-white" id="error">';
+          echo '<h1 class="w3-center w3-text-red">ERROR</h1>';
+          echo '<p class="w3-center">';
+          echo htmlentities($error);
+          echo '</p>';
+          echo '<button class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center w3-button w3-block" onclick="hideErrorDIV()">';
+          echo '<i class="fa fa-home w3-large"></i>';
+          echo 'BACK TO HOME';
+          echo '</button>';
+          echo '</div>';
+          echo '<div class="w3-row-padding hidden w3-animate-bottom" style="margin:0 -16px" id="page">';
         } else {
           $error = false;
           echo '<div class="w3-row-padding" style="margin:0 -16px" id="page">';
@@ -187,7 +189,7 @@ function hideErrorDIV(){
     <!-- Grid for pricing tables -->
     <!--<div class="w3-row-padding" style="margin:0 -16px">-->
               <ul class="w3-ul">
-        <li>
+        <!--<li>
         <h1>Bid #1</h1>
         <table class="w3-ul w3-white w3-opacity w3-hover-opacity-off w3-center">
         <tr>
@@ -201,7 +203,9 @@ function hideErrorDIV(){
         <td class="w3-left w3-padding">offered by:<span class="w3-text-indigo w3-right" id="offered_by">p1@polito.it</span></td>
         </tr>
       </table>
-      </li>
+
+      </li>-->
+	<?php drawBids(); ?>
       </ul>
     <!-- End Grid/Pricing tables -->
     </div>
@@ -219,6 +223,7 @@ function hideErrorDIV(){
   </footer>
 
 <!-- END PAGE CONTENT -->
+</div>
 </div>
 
 </body>
