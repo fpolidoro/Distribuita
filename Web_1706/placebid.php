@@ -1,6 +1,7 @@
 <?php
     require 'functions.php';
 
+    isUserAuthenticated(true);
     $conn = dbConnect();
 
     if(!isset($_POST['placebid'])) {    //placebid è il nome del button

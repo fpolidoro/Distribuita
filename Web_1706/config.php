@@ -38,7 +38,7 @@ if (!isset($_COOKIE['test'])) {
 }
 
 // inactivity period
-$maxInactivityPeriod = 60 * 2;  //2 minutes
+$maxInactivityPeriod = 600 * 2;  //2 minutes
 
 $redirectionPages = array(
   'register.php' => array(

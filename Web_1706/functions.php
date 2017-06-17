@@ -288,7 +288,7 @@ function drawUsersTHR(){
             echo '<ul class="w3-ul w3-indigo w3-opacity w3-hover-opacity-off"><li><h1>your current offer:</h1></li>';
             echo '<li class="w3-white"><h1 class="w3-large">'. $row["thr"] .'</h1></li>';
             if($row['maxbidder'] == $email){
-                echo '<li class="w3-white w3-text-green hidden">you are the highest bidder</li>';
+                echo '<li class="w3-white w3-text-green">you are the highest bidder</li>';
             }else{
               echo '<li class="w3-white w3-text-red">bid exceeded</li>';
             }
@@ -365,20 +365,25 @@ function computeBid($conn, $thr){
         header('Location: index.php?error='.urlencode($error));
         die();
     }
-    $bid_id = $row["bid_id"];
-    $email = $_SESSION["email"];
+    $bid_id = $res["bid_id"];
+    $curmaxbidder = $res["uid"];
+    $email = $_SESSION['email'];
     
     //insert thr into offers
     $result->close();
-    $result = $conn->query("INSERT INTO offers(bid_id, uid, value) VALUES($bid_id, '$email', $thr)");
-    if(!$result) { 
-        $error = 'Cannot insert your thr.';
-        header('Location: index.php?error='.urlencode($conn->error));
-        die();
+    $result = $conn->query("INSERT INTO offers(bid_id, uid, value) VALUES('$bid_id', '$email', '$thr')");
+    if(!$result) {
+        //failure of INSERT may be due to already existing bid_id and user, so first try to UPDATE 
+        $result = $conn->query("UPDATE offers SET value ='$thr' WHERE bid_id = '$bid_id' AND uid = '$email' ");
+        if(!$result){
+            $error = 'Cannot insert your thr.';
+            header('Location: index.php?error='.urlencode($conn->error));
+            die();
+        }
     }
 
     //compute new bid
-    $result = $conn->query("SELECT uid FROM offers WHERE bid_id='$bid_id' AND value = (SELECT MAX(value) FROM offers WHERE bid_id = '$bid_id') FOR UPDATE");
+    $result = $conn->query("SELECT uid, value FROM offers WHERE bid_id='$bid_id' AND value = (SELECT MAX(value) FROM offers WHERE bid_id = '$bid_id') FOR UPDATE");
     if(!$result || $result->num_rows == 0) {
         $error = 'An issue occurred while computing new bid.';
         header('Location: index.php?error='.urlencode($conn->error));
@@ -386,16 +391,22 @@ function computeBid($conn, $thr){
     }
     $res2 = $result->fetch_assoc();
     $maxbidder = $res2["uid"];
+    $maxbidders_bid = $res2["value"];
+
 
     $result->close();
     //select the second max value among thrs.
-    $result = $conn->query("SELECT MAX(value) FROM offers WHERE bid_id='$bid_id' AND uid != '$maxbidder' FOR UPDATE");
-    if(!$result) {
+    $result = $conn->query("SELECT MAX(value) AS max FROM offers WHERE bid_id='$bid_id' AND uid != '$maxbidder' FOR UPDATE");
+    if(!$result || $result->num_rows == 0) {
         $error = 'An issue occurred while computing new bid.';
         header('Location: index.php?error='.urlencode($conn->error));
         die();
     }
-    if($result->num_rows == 0){ //there are no other users having thr set, so bid remains unaltered
+
+    $res3 = $result->fetch_assoc();
+    $maxbid = $res3["max"];
+
+    if($maxbid == NULL){ //there are no other users having thr set, so bid remains unaltered
         $result->close();
         $result = $conn->query("UPDATE bids SET uid ='$maxbidder' WHERE bid_id = '$bid_id'");
         if(!$result) {
@@ -403,7 +414,6 @@ function computeBid($conn, $thr){
             header('Location: index.php?error='.urlencode($conn->error));
             die();
         }
-        $result->close();
         if(!$conn->commit()){
             $error = 'An issue occurred while committing new bid.';
             header('Location: index.php?error='.urlencode($conn->error));
@@ -415,9 +425,16 @@ function computeBid($conn, $thr){
     }
 
     //there are users having thr set, so compute highest bid
-    $res3 = $result->fetch_assoc();
-    $maxbid = $res3["value"];
-    $maxbid += 0.01;
+
+    //se trovo che il max ritornato è uguale al thr del maxbidder corrente, allora vuol dire che ci sono due max
+    //e devo tenere come maxbidder il maxbidder corrente
+    if($maxbid == $maxbidders_bid){
+        $maxbidder = $curmaxbidder;
+        $msg = 'maxbid('.$maxbid.') == maxbidders_bid('.$maxbidders_bid.')';
+    }else{
+        $maxbid += 0.01;
+        $msg = 'maxbid('.$maxbid.') != maxbidders_bid('.$maxbidders_bid.')';
+    }
     $result->close();
     $result = $conn->query("UPDATE bids SET uid ='$maxbidder', value='$maxbid' WHERE bid_id = '$bid_id'");
     if(!$result) {
@@ -425,14 +442,14 @@ function computeBid($conn, $thr){
         header('Location: index.php?error='.urlencode($conn->error));
         die();
     }
-    $result->close();
+    
     if(!$conn->commit()){
         $error = 'An issue occurred while committing new bid.';
         header('Location: index.php?error='.urlencode($conn->error));
         die();
     }
     //successful commit, redirect user to profile page
-    header('Location: profile.php');
+    header('Location: profile.php?='.urlencode($msg));
     die();
 }
 ?>
