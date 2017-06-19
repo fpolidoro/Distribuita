@@ -32,6 +32,18 @@
             header('Location: index.php?error='.urlencode($error));
             die();
         }
+
+        if(strlen($email)>256){
+            $error = 'email is too long';
+            header('Location: index.php?error='.urlencode($error));
+            die();
+        }
+
+        if(strlen($psw) > 128){
+            $error = 'passwords is too long';
+            header('Location: index.php?error='.urlencode($error));
+            die();
+        }
         
           //hash of password
         $hashedpsw = hash('sha256', $psw);

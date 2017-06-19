@@ -1,0 +1,15 @@
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+/* Set the width of the sidebar to 120px */
+.w3-sidebar {width: 120px;/*background: #222;*/}
+.w3-hover-text-indigo:hover{color:#3f51b5!important}
+.w3-indigo-extra-light {color:#000 !important; background-color:#f3f4fb !important}
+.w3-indigo-light {color:#fff !important; background-color:#8995d6 !important}
+.w3-hover-indigo-light:hover{color:#fff !important; background-color:#8995d6 !important}
+.hidden{display: none;}
+/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+#main {margin-left: 120px; margin-top: 20px;}
+#jsbanner{margin-top: 116px; margin-bottom: -96px;}
+#iconBar{margin-top: 96px;}
+/* Remove margins from "page content" on small screens */
+@media only screen and (max-width: 600px) {#main {margin-left: 0; margin-top: 60px;} #myNavbar{margin-top:116px} #jsbanner{margin-top:150px}}

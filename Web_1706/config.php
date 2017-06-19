@@ -28,7 +28,25 @@ function checkCookiesEnabled() {
   if(count($_COOKIE) > 0){
     // ok
   } else {
-    die('<h1 style="color:#fff;background-color:#f44336">you must enable cookies to view this site</h1>');
+    $page = '
+            <html>
+            <title>Bid$ - Cookies disabled</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="libs/w3.css">
+            <link rel="stylesheet" href="libs/custom_w3_changes.css">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"><body class="w3-indigo-extra-light">
+            <header class="w3-container w3-white w3-top w3-text-indigo" id="home">
+            <h1 class="w3-jumbo"><span>Bid$</span><i class="fa fa-gavel"></i></h1></header>
+            <div class="w3-padding-large" id="main">
+            <div class="w3-content w3-justify w3-text-grey w3-padding-64">
+            <div class="w3-content w3-card w3-justify w3-text-grey w3-white w3-animate-top w3-padding" id="error" style="margin-top: 60px">
+            <h1 class="w3-center w3-text-red">COOKIES ARE DISABLED</h1>
+            <p class="w3-center">You must enable cookies in order to navigate this site.</p>
+            <a class="w3-indigo w3-hover-white w3-hover-text-indigo w3-center w3-button w3-block" href="index.php">
+            <i class="fa fa-home w3-large"></i> HOME</a></div></div></div></body></html>';
+    die($page);
   }
 }
 
@@ -38,19 +56,7 @@ if (!isset($_COOKIE['test'])) {
 }
 
 // inactivity period
-$maxInactivityPeriod = 600 * 2;  //2 minutes
-
-$redirectionPages = array(
-  'register.php' => array(
-    'success' => '',
-    'error' => 'index.php'
-  ),
-  'login.php' => array(
-    'success' => '',
-    'error' => 'index.php'
-  )
-);
-
+$maxInactivityPeriod = 60 * 2;  //2 minutes
 
 $database = 'cclix11';
 if ($database === 'local') {

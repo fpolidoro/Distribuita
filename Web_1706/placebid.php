@@ -32,14 +32,15 @@
             header('Location: profile.php?error='.urlencode($error));
             die();
         }*/
+
         $rounded = round($thr, 2);  //round with precision 2
 
         if($rounded > 999999999){
-            $error = 'bid is too high';
+            $rounded = 999999999.99;
+            $error = 'Your offer has been rounded to 999999999.99€';
             header('Location: profile.php?error='.urlencode($error));
-            die();
-        }else if($rounded < 0){
-            $error = 'bid cannot be negative';
+        }else if($rounded < 0.01){
+            $error = 'bid cannot be negative and or smaller than 0.01€';
             header('Location: profile.php?error='.urlencode($error));
             die();
         }
