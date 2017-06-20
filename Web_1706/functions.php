@@ -9,8 +9,8 @@ function isUserAuthenticated($redirect){
     $t=time();
     $diff=0;
     $new=false;
-    if (isset($_SESSION['time'])){
-        $t0=$_SESSION['time'];
+    if (isset($_SESSION['time231594'])){
+        $t0=$_SESSION['time231594'];
         $diff=($t-$t0);  // inactivity period
     } else {
         $new=true;
@@ -30,7 +30,7 @@ function isUserAuthenticated($redirect){
         }
         
     } else {    //user is still authN, so update time of cookie
-        $_SESSION['time']=time(); /* update time */
+        $_SESSION['time231594']=time(); /* update time */
         $userIsAuthN = true;
     }
 }
@@ -58,7 +58,7 @@ function dbConnect(){
     }
     if(!$conn) {
         $error = "impossible to connect to database";
-        header('Location: index.php?error='.urlencode($error));
+        header('Location: index.php?fatalError='.urlencode($error));
         die();
     }
     // the db credentials are not more needed so unset them for security reasons
@@ -71,39 +71,26 @@ function dbConnect(){
 }
 
 function signup($conn, $email, $password) {
-    $result = $conn->query("SELECT uid FROM users WHERE uid = '$email' FOR UPDATE");
-    if(!$result) {  //se il risultato false, errore nella query
-        $error = 'Impossible to create the query';
-        header('Location: index.php?error='.urlencode($error));
-        die();
-    }
-    if($result->num_rows != 0) {
-        // both if password wrong or if non-existing account
-        //$error = 'This email is already registered.');
-        $error = 'This email is already registered.';
-        header('Location: index.php?error='.urlencode($error));
-        die();
-    }
-    $result->close(); //free memory of buffer so that the db can be used by other queries
-    unset($result);
-
     $result = $conn->query("INSERT INTO users(uid, upsw) VALUES('$email', '$password')");
-    if(!$result) {
-        $error = 'Impossible to create the account. Maybe email already exists.';
+    if(!$result) {  //if $result == false, then see what the error is, and if it says duplicate entry, it's duplicate email
+        if(substr($conn->error, 0, strlen('Duplicate entry')) == 'Duplicate entry'){
+            $error = 'The email '. $email . ' is already registered.';
+        }else{
+            $error = 'An error occurred when creating the account.';
+        }
         header('Location: index.php?error='.urlencode($error));
         die();
     }
 
     if(!$conn->commit()) {
-        //$error = 'Impossible to commit. Please try again');
         $error = 'Impossible to commit. Please try again';
         header('Location: index.php?error='.urlencode($error));
         die();
     }
     // save into the session array
-    $_SESSION['time'] = time();
-    $_SESSION['email'] = $email;
-    $_SESSION['password'] = $password;
+    $_SESSION['time231594'] = time();
+    $_SESSION['email231594'] = $email;
+    $_SESSION['password231594'] = $password;
     
     header('Location: index.php');
     die();
@@ -136,9 +123,9 @@ if(!$result->fetch_object()){
     unset($result);
 
     // save into the session array
-    $_SESSION['time'] = time();
-    $_SESSION['email'] = $email;
-    $_SESSION['password'] = $password;
+    $_SESSION['time231594'] = time();
+    $_SESSION['email231594'] = $email;
+    $_SESSION['password231594'] = $password;
     
     //redirect on user's profile
     header('Location: profile.php');
@@ -152,7 +139,7 @@ function drawSidebar(){
 
     if($userIsAuthN){
         //print email of user
-        echo '<div class="w3-text-indigo w3-white w3-padding w3-animate-left"><h6>HELLO <br>'.$_SESSION['email'].'</h6></div>';
+        echo '<div class="w3-text-indigo w3-white w3-padding w3-animate-left"><h6>HELLO <br>'.$_SESSION['email231594'].'</h6></div>';
         //bids
         if($script == 'profile.php'){
             echo '<a href="index.php" class="w3-bar-item w3-button w3-padding-large w3-hover-white w3-hover-text-indigo w3-text-indigo">';
@@ -193,7 +180,7 @@ function drawSidebar(){
 function drawNavbar(){ //for small screens
     global $userIsAuthN;
     if($userIsAuthN){
-        echo '<a class="w3-bar-item w3-indigo" style="border-style: solid; border-top:0px; border-left:0px; border-bottom:0px; width:25% !important">HELLO '.$_SESSION['email'].'</a>';
+        echo '<a class="w3-bar-item w3-indigo" style="border-style: solid; border-top:0px; border-left:0px; border-bottom:0px; width:25% !important">HELLO '.$_SESSION['email231594'].'</a>';
         echo '<a href="index.php" class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important">BIDS</a>';
         echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important" href="profile.php">MY OFFERS</a>';
         echo '<a class="w3-bar-item w3-button w3-hover-indigo" style="width:25% !important" href="logout.php">LOGOUT</a>';
@@ -205,6 +192,7 @@ function drawNavbar(){ //for small screens
 
 function drawBids(){
     global $conn;
+    //this select is only for showing the content of the db
     $result = $conn->query("SELECT * FROM bids");
     if(!$result) {  //se il risultato false, errore nella query
         $error = 'Impossible to create the query';
@@ -251,7 +239,7 @@ function drawBids(){
 
 function drawUsersTHR(){
     global $conn;
-    $email = $_SESSION['email'];
+    $email = $_SESSION['email231594'];
     //join between offers and bids to retrieve the maxbidder and maxbid for each bid
     $result = $conn->query("SELECT offers.bid_id, offers.value AS thr, bids.uid AS maxbidder, bids.value AS maxbid FROM offers INNER JOIN bids ON offers.bid_id = bids.bid_id WHERE offers.uid='$email'");
     if(!$result) {  //se il risultato false, errore nella query
@@ -280,7 +268,7 @@ function drawUsersTHR(){
             echo '<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i></td>';
             echo '<td class="w3-white w3-xxlarge" id="cur_value">';
             //input field
-            echo '<input type="text" name="thr" pattern="[0-9]{1,9}\.?[0-9]{1,2}" maxlength="13" style="width:75%" required>';
+            echo '<input type="text" name="thr" id="thr" pattern="[0-9]{1,9}(\.[0-9]{1,2})?" maxlength="13" style="width:75%" placeholder="'.$row['maxbid']. '" required>';
             echo '<i class="fa fa-eur w3-xlarge"></i></td></tr>';
             echo '<tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td><td class="w3-white">';
             echo '<p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR '. $row["maxbid"] .' or more</p>';
@@ -316,7 +304,7 @@ function drawUsersTHR(){
                 echo '<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i></td>';
                 echo '<td class="w3-white w3-xxlarge" id="cur_value">';
                 //input field
-                echo '<input type="text" name="thr" pattern="[0-9]{1,9}\.?[0-9]{1,2}" maxlength="13" style="width:75%" required>';
+                echo '<input type="text" name="thr" id="thr" pattern="[0-9]{1,9}(\.[0-9]{1,2})?" maxlength="13" style="width:75%" placeholder="'.$row['maxbid']. '" required>';
                 echo '<i class="fa fa-eur w3-xlarge"></i></td></tr>';
                 echo '<tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td><td class="w3-white">';
                 echo '<p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR '. $row["value"] .' or more</p>';
@@ -350,7 +338,7 @@ function computeBid($conn, $thr){
     }
     $bid_id = $res["bid_id"];
     $curmaxbidder = $res["uid"];
-    $email = $_SESSION['email'];
+    $email = $_SESSION['email231594'];
     $result->close();
     
     $result = $conn->query("SELECT value FROM offers WHERE uid='$email' FOR UPDATE");

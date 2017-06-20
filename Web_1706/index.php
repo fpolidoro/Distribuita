@@ -23,13 +23,35 @@
 </header>
 
 <script type="text/javascript">
-var password = document.getElementById("newpsw")
-  , confirm_password = document.getElementById("checkpsw");
-  
+window.onload = function() {
+  document.getElementById("newpsw").onchange = validatePassword;
+  document.getElementById("newpsw").onkeyup = doPasswordsMatch;
+  document.getElementById("checkpsw").onkeyup = doPasswordsMatch;
+  document.getElementById("usrname").onchange = validateEmail;
+  document.getElementById("newusrname").onchange = validateEmail;
+}  
 
 function validatePassword(){
-  if(password.value != confirm_password.value) {
-    confirm_password.setCustomValidity("Passwords Don't Match");
+  var password = document.getElementById("newpsw"),
+  pattern= /(?=.*[A-Za-z])(?=.*\d).{2,}/;
+
+  if(password.value != ''){
+    if(!pattern.test(password.value)) {
+      password.setCustomValidity("Password must contain at least a number and a letter");
+      document.getElementById("registerFailed").innerHTML = "Password does not meet the requested format";
+    } else {
+      confirm_password.setCustomValidity('');
+      document.getElementById("registerFailed").innerHTML = "";
+    }
+  }
+}
+
+function doPasswordsMatch(){
+  var password = document.getElementById("newpsw")
+  , confirm_password = document.getElementById("checkpsw");
+
+  if(password.value != confirm_password.value && (password.value != '' && confirm_password.value != '')) {
+    confirm_password.setCustomValidity("Passwords don't match");
     document.getElementById("registerFailed").innerHTML = "passwords must match";
   } else {
     confirm_password.setCustomValidity('');
@@ -37,8 +59,27 @@ function validatePassword(){
   }
 }
 
-password.onchange = validatePassword;
-confirm_password.onkeyup = validatePassword;
+function validateEmail() {
+  var pattern = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
+
+  if(document.getElementById('loginCard').style.display === 'block'){
+    var email = document.getElementById('usrname');
+    var msgbox = document.getElementById("loginFailed");
+  }else {
+    var email = document.getElementById('newusrname');
+    var msgbox = document.getElementById("registerFailed");
+  }
+  
+  if(email.value != ''){
+    if (!pattern.test(email.value)) {
+      email.setCustomValidity("Email does not appear to be in a valid format");
+      msgbox.innerHTML = "Please insert a valid email address";
+    } else {
+      email.setCustomValidity('');
+      msgbox.innerHTML = "";
+    }
+  }
+}
 
 function switchCards() {
     var login = document.getElementById('loginCard');
@@ -50,10 +91,16 @@ function switchCards() {
     if (login.style.display === 'none') {
         login.style.display = 'block';
         register.style.display = 'none';
+        document.getElementById('newusrname').setCustomValidity('');
+        document.getElementById('newpsw').setCustomValidity('');
+        document.getElementById('checkpsw').setCustomValidity('');
+        document.getElementById('registerFailed').innerHTML = '';
         regForm.reset();
     } else {
         login.style.display = 'none';
         register.style.display = 'block';
+        document.getElementById('usrname').setCustomValidity('');
+        document.getElementById('loginFailed').innerHTML = '';
         logForm.reset();
     }
 }
@@ -69,12 +116,18 @@ function closeAndResetCard(){
     var regForm = document.getElementById('registerForm');
     
     if (login.style.display === 'block') {
-        login.style.display = 'none';
+        document.getElementById('usrname').setCustomValidity('');
+        document.getElementById('loginFailed').innerHTML = '';
         logForm.reset();
+        login.style.display = 'none';
     }
     if(register.style.display = 'block'){
-		register.style.display = 'none';
-        regForm.reset();
+      document.getElementById('newusrname').setCustomValidity('');
+      document.getElementById('newpsw').setCustomValidity('');
+      document.getElementById('checkpsw').setCustomValidity('');
+      document.getElementById('registerFailed').innerHTML = '';
+      regForm.reset();
+      register.style.display = 'none';
     }
 }
 
@@ -85,6 +138,7 @@ function hideErrorDIV(){
 	var pagediv = document.getElementById('page');
 	pagediv.style.display = 'block';
 }
+
 </script>
 <noscript>
 <div id="jsbanner" class="w3-panel w3-display-container w3-indigo w3-center w3-animate-top w3-display-top">
@@ -121,10 +175,10 @@ function hideErrorDIV(){
         <p class="w3-medium w3-text-indigo">LOGIN to Bid$</p>
 	  </header>
       <form class="w3-container" id="loginForm" method="POST" action="login.php">
-		<p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed"/>
+		<p class="w3-animate-bottom w3-center w3-text-red" id="loginFailed"></p>
         
       	<div class="w3-section">
-          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" maxlength="256" name="usrname" required>
+          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Email" maxlength="256" name="usrname" id="usrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Password" maxlength="128" name="pswLogin" required>
           <button class="w3-button w3-block w3-indigo w3-section w3-padding w3-hover-indigo-light" type="submit" name="login">Login</button>
         </div>
@@ -146,7 +200,7 @@ function hideErrorDIV(){
       <form class="w3-container" action="register.php" method="POST" id="registerForm">
 		<p class="w3-animate-bottom w3-center w3-text-red" id="registerFailed"/>
         <div class="w3-section">
-          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" maxlength="256" required>
+          <input class="w3-input w3-border w3-margin-bottom" type="email" placeholder="Enter your email" name="newusrname" maxlength="256" id="newusrname" required>
           <input class="w3-input w3-border" type="password" placeholder="Enter a password*" name="newpsw" id="newpsw" maxlength="128" required pattern="(?=.*[A-Za-z])(?=.*\d).{2,}">
           <p class="w3-text-black w3-small">*Password must contain at least a number and a letter</p>
           <input class="w3-input w3-border" type="password" maxlength="128" placeholder="Re-enter password*" name="checkpsw" id="checkpsw" required>

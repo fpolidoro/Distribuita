@@ -23,15 +23,32 @@
   </h1>
 </header>
 
-<script type="text/javascript">
- 
-function hideErrorDIV(){
-	var errdiv = document.getElementById('error');
-	errdiv.style.display = 'none';
 
-	var pagediv = document.getElementById('page');
-	pagediv.style.display = 'block';
-}
+<script type="text/javascript">
+  //onload, otherwise thr == null because the page has not been rendered yet
+  window.onload = function() {
+    document.getElementById('thr').onchange = isLessThanMaxBid;
+  }
+    //var thr_input = document.getElementById("thr") ,
+    //maxbid_txt = document.getElementById("maxbid");
+
+    
+    function hideErrorDIV(){
+      var errdiv = document.getElementById('error');
+      errdiv.style.display = 'none';
+      var pagediv = document.getElementById('page');
+      pagediv.style.display = 'block';
+    }
+
+    function isLessThanMaxBid() {
+      var thr_input = document.getElementById("thr") ,
+      maxbid_txt = document.getElementById("maxbid");
+      if(parseFloat(thr_input.value) < parseFloat(maxbid_txt.innerHTML)){
+        thr_input.setCustomValidity("Your offer must be greater than or equal to current bid");
+      }else{
+        thr_input.setCustomValidity('');
+      }
+    }
 </script>
 <noscript>
 <div id="jsbanner" class="w3-panel w3-display-container w3-indigo w3-center w3-animate-top w3-display-top">
@@ -108,7 +125,6 @@ function hideErrorDIV(){
     <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
   </footer>
-
 
 <!-- END PAGE CONTENT -->
 </div>
