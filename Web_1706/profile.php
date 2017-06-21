@@ -50,11 +50,6 @@
       }
     }
 </script>
-<noscript>
-<div id="jsbanner" class="w3-panel w3-display-container w3-indigo w3-center w3-animate-top w3-display-top">
-  <h3>Javascript is disabled, the site may not work properly</h3>
-</div>
-</noscript>
 
 <!-- Icon Bar (Sidebar - hidden on small screens) -->
 <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-text-indigo w3-indigo-extra-light" id="iconBar">
@@ -73,6 +68,12 @@
       }?>
   </div>
 </div>
+
+<noscript>
+  <div id="jsbanner" class="w3-bar w3-indigo w3-center w3-animate-top">
+    <h3 id="nojsH3">Javascript is disabled, the site may not work properly</h3>
+  </div>
+</noscript>
 
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
