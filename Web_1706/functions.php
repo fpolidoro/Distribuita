@@ -255,7 +255,7 @@ function drawUsersTHR(){
             echo '<h1>Bid #'. $row['bid_id'] .'</h1>';
             
             echo '<ul class="w3-ul w3-indigo w3-opacity w3-hover-opacity-off"><li><h1>your current offer:</h1></li>';
-            echo '<li class="w3-white"><h1 class="w3-large">'. $row["thr"] .'</h1></li>';
+            echo '<li class="w3-white"><h1 class="w3-large">'. $row["thr"] .'<span class="w3-right"><i class="fa fa-eur w3-large"></i></span></h1></li>';
             if($row['maxbidder'] == $email){
                 echo '<li class="w3-white w3-text-green">you are the highest bidder</li>';
             }else{
@@ -269,7 +269,7 @@ function drawUsersTHR(){
             echo '<td class="w3-white w3-xxlarge" id="cur_value">';
             //input field
             echo '<input type="text" name="thr" id="thr" pattern="[0-9]{1,9}(\.[0-9]{1,2})?" maxlength="13" style="width:75%" placeholder="'.$row['maxbid']. '" required>';
-            echo '<i class="fa fa-eur w3-xlarge"></i></td></tr>';
+            echo '<i class="fa fa-eur w3-xlarge w3-padding"></i></td></tr>';
             echo '<tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td><td class="w3-white">';
             echo '<p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR '. $row["maxbid"] .' or more</p>';
             echo '<p class="hidden" id="maxbid">'.$row["maxbid"].'</p>';
@@ -304,8 +304,8 @@ function drawUsersTHR(){
                 echo '<td class="w3-dark-grey w3-center" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"><i class="fa fa-star w3-jumbo w3-center"></i></td>';
                 echo '<td class="w3-white w3-xxlarge" id="cur_value">';
                 //input field
-                echo '<input type="text" name="thr" id="thr" pattern="[0-9]{1,9}(\.[0-9]{1,2})?" maxlength="13" style="width:75%" placeholder="'.$row['maxbid']. '" required>';
-                echo '<i class="fa fa-eur w3-xlarge"></i></td></tr>';
+                echo '<input type="text" name="thr" id="thr" pattern="[0-9]{1,9}(\.[0-9]{1,2})?" maxlength="13" style="width:75%" placeholder="'.$row['value']. '" required>';
+                echo '<i class="fa fa-eur w3-xlarge w3-padding"></i></td></tr>';
                 echo '<tr><td class="w3-dark-grey" style="border-style: solid; border-left:0px; border-top: 0px; border-bottom:0px; border-color:white"></td><td class="w3-white">';
                 echo '<p class="w3-text-dark-grey" style="margin-top: -4px">enter EUR '. $row["value"] .' or more</p>';
                 echo '<p class="hidden" id="maxbid">'.$row["value"].'</p>';
