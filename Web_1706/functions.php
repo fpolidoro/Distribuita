@@ -57,7 +57,7 @@ function dbConnect(){
         die();
     }
     if(!$conn) {
-        $error = "impossible to connect to database";
+        $error = "Impossible to connect to database";
         header('Location: index.php?fatalError='.urlencode($error));
         die();
     }
@@ -331,7 +331,7 @@ function computeBid($conn, $thr){
     //for sake of simplicity, bids contains only an entry, so it is ok to fetch the first row (that'll be the only one)
     $res = $result->fetch_assoc();
     if($thr < $res["value"]){
-        $error = 'your offer cannot be lower than the current bid. your thr='.$thr.'; current bid='.$res["value"];
+        $error = 'your offer cannot be lower than the current bid. Your thr='.$thr.'; current bid='.$res["value"];
         $result->close();
         header('Location: profile.php?error='.urlencode($error));
         die();
@@ -351,7 +351,7 @@ function computeBid($conn, $thr){
         $result->close();
         $result = $conn->query("INSERT INTO offers(bid_id, uid, value) VALUES('$bid_id', '$email', '$thr')");
         if(!$result){
-            $error = 'Cannot insert your thr. result->num_rows == 0';
+            $error = 'Cannot insert your offer.';
             //header('Location: profile.php?error='.urlencode($conn->error));
             header('Location: profile.php?error='.urlencode($error));
             die();
@@ -365,10 +365,11 @@ function computeBid($conn, $thr){
             header('Location: profile.php?error='.urlencode($error));
             die();
         }*/
+
         $result->close();
         $result = $conn->query("UPDATE offers SET value ='$thr' WHERE bid_id = '$bid_id' AND uid = '$email' ");
         if(!$result){
-            $error = 'Cannot insert your thr. Update offers';
+            $error = 'Cannot insert your offer.';
             header('Location: profile.php?error='.urlencode($conn->error));
             //header('Location: profile.php?error='.urlencode($error)); //DEBUG
             die();
@@ -378,7 +379,7 @@ function computeBid($conn, $thr){
     //compute new bid
     $result = $conn->query("SELECT uid, value FROM offers WHERE bid_id='$bid_id' AND value = (SELECT MAX(value) FROM offers WHERE bid_id = '$bid_id') FOR UPDATE");
     if(!$result || $result->num_rows == 0) {
-        $error = 'An issue occurred while computing new bid. SELECT uid';
+        $error = 'An issue occurred while computing new bid.';
         header('Location: profile.php?error='.urlencode($conn->error));
         //header('Location: profile.php?error='.urlencode($error)); //DEBUG
         die();
@@ -392,7 +393,7 @@ function computeBid($conn, $thr){
     //select the second max value among thrs.
     $result = $conn->query("SELECT MAX(value) AS max FROM offers WHERE bid_id='$bid_id' AND uid != '$maxbidder' FOR UPDATE");
     if(!$result || $result->num_rows == 0) {
-        $error = 'An issue occurred while computing new bid. SELECT MAX(value)';
+        $error = 'An issue occurred while computing new bid.';
         header('Location: profile.php?error='.urlencode($conn->error));
         //header('Location: profile.php?error='.urlencode($error)); //DEBUG
         die();
@@ -405,7 +406,7 @@ function computeBid($conn, $thr){
         $result->close();
         $result = $conn->query("UPDATE bids SET uid ='$maxbidder' WHERE bid_id = '$bid_id'");
         if(!$result) {
-            $error = 'An issue occurred while updating bid. UPDATE bids SET uid = maxbidder';
+            $error = 'An issue occurred while updating bid.';
             header('Location: profile.php?error='.urlencode($conn->error));
             //header('Location: profile.php?error='.urlencode($error)); //DEBUG
             die();

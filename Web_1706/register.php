@@ -6,15 +6,13 @@
     require 'functions.php';
     
     if(!isset($_POST['register'])) {    //register è il nome del button
-        //redirectWithError('isset post register');
-        $error = 'isset post register';
+        $error = 'Incorrect request';
         header('Location: index.php?error='.urlencode($error));
         die();
     }else{
         $conn = dbConnect();
         if(!isset($_POST['newusrname']) || !isset($_POST['newpsw']) || !isset($_POST['checkpsw']) || $_POST['email'] === '' || $_POST['newpsw'] === '' || $_POST['checkpsw'] === ''){
-            //redirectWithError('Isset in register non va');
-            $error = 'isset in register usrname et c non va';
+            $error = 'Incorrect request';
             header('Location: index.php?error='.urlencode($error));
             die();
         }
@@ -31,7 +29,6 @@
 
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             //email wrong format error
-            //redirectWithError('email in wrong format');
             $error = 'email in wrong format';
             header('Location: index.php?error='.urlencode($error));
             die();
@@ -50,7 +47,6 @@
  
         if($psw1 != $psw2){
             //passwords don't match error
-            //redirectWithError('passwords do not match');
             $error = 'passwords do not match';
             header('Location: index.php?error='.urlencode($error));
             die();

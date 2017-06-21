@@ -14,11 +14,12 @@ function checkCookiesEnabled() {
   setcookie('test', 1);
   // redirect on test page if not already on it
   if(!isset($_GET['cookies'])){
+    //set "cookies" for checking if test has been set, after redirection. if cookies is already set, don't redirect (avoids redirection loops)
     if (sizeof($_GET)) {
-      // add a new argument
+      // the url already contains arguments, so append &cookies
       header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '&cookies', TRUE, 301);
     } else {
-      // this is the only argument
+      // the url has no parameters set, so append ?cookies
       header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '?cookies', TRUE, 301);
     }
 

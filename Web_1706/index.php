@@ -40,9 +40,12 @@ function validatePassword(){
       password.setCustomValidity("Password must contain at least a number and a letter");
       document.getElementById("registerFailed").innerHTML = "Password does not meet the requested format";
     } else {
-      confirm_password.setCustomValidity('');
+      password.setCustomValidity('');
       document.getElementById("registerFailed").innerHTML = "";
     }
+  }else{
+    password.setCustomValidity('');
+    msgbox.innerHTML = "";
   }
 }
 
@@ -78,6 +81,9 @@ function validateEmail() {
       email.setCustomValidity('');
       msgbox.innerHTML = "";
     }
+  }else{
+    email.setCustomValidity('');
+    msgbox.innerHTML = "";
   }
 }
 
