@@ -1,0 +1,6 @@
+exam based on lab 3.4
+
+server2 accept from 
+
+also the server should create sockets for clients on demand
+or serve at most 3 (predefined using fork)

@@ -1,0 +1,31 @@
+client/client_main.c: In function ‘main’:
+client/client_main.c:106:5: warning: parameter names (without types) in function declaration [enabled by default]
+client/client_main.c: In function ‘XDRmanageFileReq’:
+client/client_main.c:137:7: error: ‘nomeFile’ redeclared as different kind of symbol
+client/client_main.c:135:35: note: previous definition of ‘nomeFile’ was here
+client/client_main.c:144:9: error: ‘oldCommand’ undeclared (first use in this function)
+client/client_main.c:144:9: note: each undeclared identifier is reported only once for each function it appears in
+client/client_main.c: At top level:
+client/client_main.c:159:6: warning: data definition has no type or storage class [enabled by default]
+client/client_main.c:159:6: error: conflicting types for ‘xdrstream_socket’
+client/client_main.c:157:12: note: previous declaration of ‘xdrstream_socket’ was here
+client/client_main.c:159:32: error: ‘s’ undeclared here (not in a function)
+client/client_main.c:160:18: error: expected declaration specifiers or ‘...’ before ‘&’ token
+client/client_main.c:160:34: error: expected declaration specifiers or ‘...’ before ‘xdrstream_socket’
+client/client_main.c:160:52: error: expected declaration specifiers or ‘...’ before ‘XDR_ENCODE’
+client/client_main.c:161:18: error: expected declaration specifiers or ‘...’ before ‘&’ token
+client/client_main.c:161:34: error: expected declaration specifiers or ‘...’ before ‘xdrstream_socket’
+client/client_main.c:161:52: error: expected declaration specifiers or ‘...’ before ‘XDR_DECODE’
+client/client_main.c:164:2: error: expected identifier or ‘(’ before ‘if’
+client/client_main.c:169:9: error: expected declaration specifiers or ‘...’ before string constant
+client/client_main.c:170:2: error: expected identifier or ‘(’ before ‘if’
+client/client_main.c:175:6: error: expected identifier or ‘(’ before ‘if’
+client/client_main.c:211:6: error: expected identifier or ‘(’ before ‘else’
+client/client_main.c:216:6: error: expected identifier or ‘(’ before ‘else’
+client/client_main.c:225:6: error: expected identifier or ‘(’ before ‘else’
+client/client_main.c:230:3: error: expected identifier or ‘(’ before ‘do’
+client/client_main.c:230:3: error: expected identifier or ‘(’ before ‘while’
+client/client_main.c:231:3: error: expected identifier or ‘(’ before ‘do’
+client/client_main.c:231:3: error: expected identifier or ‘(’ before ‘while’
+client/client_main.c:233:6: error: expected identifier or ‘(’ before ‘return’
+client/client_main.c:234:1: error: expected identifier or ‘(’ before ‘}’ token

@@ -1,0 +1,14 @@
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o: In function `_start':
+(.text+0x20): undefined reference to `main'
+/tmp/ccUmJulX.o: In function `Socket':
+/home/fab/Documenti/Polito/2 LM/Distribuita I/Temi/20150629/source/sockwrap.c:37: undefined reference to `prog_name'
+/tmp/ccUmJulX.o: In function `Bind':
+/home/fab/Documenti/Polito/2 LM/Distribuita I/Temi/20150629/source/sockwrap.c:44: undefined reference to `prog_name'
+/tmp/ccUmJulX.o: In function `Listen':
+/home/fab/Documenti/Polito/2 LM/Distribuita I/Temi/20150629/source/sockwrap.c:53: undefined reference to `prog_name'
+/tmp/ccUmJulX.o: In function `Accept':
+/home/fab/Documenti/Polito/2 LM/Distribuita I/Temi/20150629/source/sockwrap.c:70: undefined reference to `prog_name'
+/tmp/ccUmJulX.o: In function `Connect':
+/home/fab/Documenti/Polito/2 LM/Distribuita I/Temi/20150629/source/sockwrap.c:79: undefined reference to `prog_name'
+/tmp/ccUmJulX.o:/home/fab/Documenti/Polito/2 LM/Distribuita I/Temi/20150629/source/sockwrap.c:86: more undefined references to `prog_name' follow
+collect2: error: ld returned 1 exit status
